@@ -3,7 +3,7 @@ import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import Travel from "../assets/Travel.png";
+import AirplaneBackground from "../assets/AirplaneBackground.jpg";
 import { Box } from "@mui/material";
 import { Paper } from "@mui/material";
 
@@ -24,7 +24,9 @@ function SearchPage() {
             backgroundColor:"rgb(251, 251, 251)"
           }}
         >
-          <img src={Travel} alt="Travel" style={{ height: "100%" }} />
+          <Box sx={{width:"65%", overflow:"hidden"}}>
+          <img src={AirplaneBackground} alt="Travel" style={{ height: "100%", transform:"scale(1.1) translateX(-20%)" }} />
+          </Box>
           <SearchModule />
         </Paper>
       </Box>
