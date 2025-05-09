@@ -8,4 +8,8 @@ public class FlightSearchResponse {
     private String arrival;
     private String airline;
     private String price;
+    private String departureTime;
+    private String arrivalTime;
+    private String duration;
+    private int numberOfStops;
 }
