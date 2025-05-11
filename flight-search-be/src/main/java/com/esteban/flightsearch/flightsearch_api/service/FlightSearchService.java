@@ -12,6 +12,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.Duration;
+
 
 @Service
 public class FlightSearchService {
@@ -106,6 +110,29 @@ public class FlightSearchService {
                     String duration = itinerary.get("duration").asText();
                     int numberOfStops = itinerary.get("segments").size() - 1;
 
+                    LocalDateTime depTime = LocalDateTime.parse(departureTime);
+                    LocalDateTime arrTime = LocalDateTime.parse(arrivalTime);
+                    String formattedDate = depTime.toLocalDate().toString();
+                    String formattedTimeRange = depTime.toLocalTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
+                            " - " +
+                            arrTime.toLocalTime().format(DateTimeFormatter.ofPattern("h:mm a"));
+
+                    Duration dur = Duration.parse(duration);
+                    long hours = dur.toHours();
+                    long minutes = dur.minusHours(hours).toMinutes();
+                    String formattedDuration = String.format("%d hr %d min", hours, minutes);
+
+                    // Stop locations
+                    List<String> stopLocations = new ArrayList<>();
+                    if (itinerary.get("segments").size() > 1) {
+                        for (int i = 0; i < itinerary.get("segments").size() - 1; i++) {
+                            JsonNode stopSegment = itinerary.get("segments").get(i);
+                            String stopIata = stopSegment.get("arrival").get("iataCode").asText();
+                            stopLocations.add(stopIata);
+                        }
+                    }
+                    String stopsCombined = stopLocations.isEmpty() ? "None" : String.join(", ", stopLocations);
+
                     // ✅ set all fields
                     flight.setDeparture(departure);
                     flight.setArrival(arrival);
@@ -116,7 +143,10 @@ public class FlightSearchService {
                     flight.setArrivalTime(arrivalTime);
                     flight.setDuration(duration);
                     flight.setNumberOfStops(numberOfStops);
-
+                    flight.setFormattedDate(formattedDate);
+                    flight.setFormattedTimeRange(formattedTimeRange);
+                    flight.setFormattedDuration(formattedDuration);
+                    flight.setStops(stopsCombined);
                     results.add(flight);
                 }
             }
