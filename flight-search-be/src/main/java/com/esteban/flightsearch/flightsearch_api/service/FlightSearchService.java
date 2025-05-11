@@ -12,6 +12,10 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.Duration;
+
 
 @Service
 public class FlightSearchService {
@@ -101,10 +105,29 @@ public class FlightSearchService {
                     String currency = priceNode.has("currency") ? priceNode.get("currency").asText() : null;
 
                     // ✅ new fields
-                    String departureTime = segment.get("departure").get("at").asText();
-                    String arrivalTime = segment.get("arrival").get("at").asText();
-                    String duration = itinerary.get("duration").asText();
+                    LocalDateTime depTime = LocalDateTime.parse(segment.get("departure").get("at").asText());
+                    LocalDateTime arrTime = LocalDateTime.parse(segment.get("arrival").get("at").asText());
+                    String formattedDate = depTime.toLocalDate().toString();
+                    String formattedTimeRange = depTime.toLocalTime().format(DateTimeFormatter.ofPattern("h:mm a")) +
+                            " - " +
+                            arrTime.toLocalTime().format(DateTimeFormatter.ofPattern("h:mm a"));
+
+                    Duration dur = Duration.parse(itinerary.get("duration").asText());
+                    long hours = dur.toHours();
+                    long minutes = dur.minusHours(hours).toMinutes();
+                    String formattedDuration = String.format("%d hr %d min", hours, minutes);
+
                     int numberOfStops = itinerary.get("segments").size() - 1;
+
+                    List<String> stopLocations = new ArrayList<>();
+                    if (numberOfStops > 0) {
+                        for (int i = 0; i < itinerary.get("segments").size() - 1; i++) {
+                            JsonNode stopSegment = itinerary.get("segments").get(i);
+                            String stopIata = stopSegment.get("arrival").get("iataCode").asText();
+                            stopLocations.add(stopIata);
+                        }
+                    }
+                    String stopsCombined = stopLocations.isEmpty() ? "None" : String.join(", ", stopLocations);
 
                     // ✅ set all fields
                     flight.setDeparture(departure);
@@ -112,11 +135,11 @@ public class FlightSearchService {
                     flight.setAirline(carrier);
                     flight.setPrice(price);
                     flight.setCurrency(currency);
-                    flight.setDepartureTime(departureTime);
-                    flight.setArrivalTime(arrivalTime);
-                    flight.setDuration(duration);
                     flight.setNumberOfStops(numberOfStops);
-
+                    flight.setFormattedDate(formattedDate);
+                    flight.setFormattedTimeRange(formattedTimeRange);
+                    flight.setFormattedDuration(formattedDuration);
+                    flight.setStops(stopsCombined);
                     results.add(flight);
                 }
             }
