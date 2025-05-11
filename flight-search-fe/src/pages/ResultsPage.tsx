@@ -1,4 +1,3 @@
-// src/pages/ResultsPage.tsx
 import { useEffect, useState } from "react";
 import { Box, Card, CardContent, Typography, Button } from "@mui/material";
 import { Paper } from "@mui/material";
@@ -115,7 +114,7 @@ export default function ResultsPage() {
           gutterBottom
           sx={{ fontWeight: "500", width: "65%", fontSize: "22px" }}
         >
-          Available Flights
+          Departing Flights
         </Typography>
 
         {flights.map((flight) => (
