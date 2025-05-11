@@ -90,7 +90,7 @@ export default function ReturnResultsPage() {
               display: "flex",
               alignItems: "center",
               borderBottom: "1px solid rgb(227, 227, 228)",
-              borderRadius: "10px",
+              borderRadius: "5px",
               backgroundColor: "white",
             }}
           >
