@@ -81,6 +81,7 @@ export default function ResultsPage() {
           backgroundColor: "rgba(210, 225, 255, 0.83)",
           backgroundBlendMode: "soft-light",
           width: "100%",
+          
         }}
       >
         <div style={{ width: "100%", marginBottom: "15px" }}>
@@ -90,7 +91,7 @@ export default function ResultsPage() {
               display: "flex",
               alignItems: "center",
               borderBottom: "1px solid rgb(227, 227, 228)",
-              borderRadius: "10px",
+              borderRadius: "5px",
               backgroundColor: "white",
             }}
           >
