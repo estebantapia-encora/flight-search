@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import SearchPage from "./pages/SearchPage";
 import ResultsPage from "./pages/ResultsPage";
 import DetailsPage from "./pages/DetailsPage";
+import ReturnResultsPage from "./pages/ReturnResultsPage"
 
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -20,6 +21,7 @@ function App() {
         <Routes>
           <Route path="/" element={<SearchPage />} />
           <Route path="/results" element={<ResultsPage />} />
+          <Route path="/return-flights" element={<ReturnResultsPage />} /> 
           <Route path="/details/:id" element={<DetailsPage />} />
         </Routes>
       </Router>
