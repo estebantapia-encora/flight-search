@@ -19,7 +19,7 @@ type Flight = {
   pricePerPerson: number;
 };
 
-export default function ResultsPage() {
+export default function ReturnResultsPage() {
   const [flights, setFlights] = useState<Flight[]>([]);
 
   useEffect(() => {
@@ -114,7 +114,7 @@ export default function ResultsPage() {
           gutterBottom
           sx={{ fontWeight: "500", width: "65%", fontSize: "22px" }}
         >
-          Departing Flights
+          Returning Flights
         </Typography>
 
         {flights.map((flight) => (
