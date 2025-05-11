@@ -95,7 +95,10 @@ public class FlightSearchService {
                     String departure = segment.get("departure").get("iataCode").asText();
                     String arrival = segment.get("arrival").get("iataCode").asText();
                     String carrier = segment.get("carrierCode").asText();
-                    String price = offer.get("price").get("total").asText();
+
+                    JsonNode priceNode = offer.get("price");
+                    String price = priceNode.get("total").asText();
+                    String currency = priceNode.has("currency") ? priceNode.get("currency").asText() : null;
 
                     // ✅ new fields
                     String departureTime = segment.get("departure").get("at").asText();
@@ -108,6 +111,7 @@ public class FlightSearchService {
                     flight.setArrival(arrival);
                     flight.setAirline(carrier);
                     flight.setPrice(price);
+                    flight.setCurrency(currency);
                     flight.setDepartureTime(departureTime);
                     flight.setArrivalTime(arrivalTime);
                     flight.setDuration(duration);
