@@ -33,7 +33,11 @@ public class FlightSearchService {
         // 1. Get access token
         String tokenJson = webClient.post()
                 .uri("/v1/security/oauth2/token")
-                .bodyValue("grant_type=client_credentials&client_id=" + clientId + "&client_secret=" + clientSecret)
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .body(org.springframework.web.reactive.function.BodyInserters.fromFormData("grant_type", "client_credentials")
+                        .with("client_id", clientId)
+                        .with("client_secret", clientSecret))
+
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -42,14 +46,23 @@ public class FlightSearchService {
 
         // 2. Search for flights
         String responseJson = webClient.get()
-                .uri(uriBuilder -> uriBuilder
-                        .path("/v2/shopping/flight-offers")
-                        .queryParam("originLocationCode", request.getOriginLocationCode())
-                        .queryParam("destinationLocationCode", request.getDestinationLocationCode())
-                        .queryParam("departureDate", request.getDepartureDate())
-                        .queryParam("adults", request.getAdults())
-                        .queryParam("nonStop", request.isNonStop())
-                        .build())
+                .uri(uriBuilder -> {
+                    var builder = uriBuilder
+                            .path("/v2/shopping/flight-offers")
+                            .queryParam("originLocationCode", request.getOriginLocationCode())
+                            .queryParam("destinationLocationCode", request.getDestinationLocationCode())
+                            .queryParam("departureDate", request.getDepartureDate())
+                            .queryParam("adults", request.getAdults())
+                            .queryParam("nonStop", request.isNonStop())
+                            .queryParam("currencyCode", request.getCurrencyCode())
+                            .queryParam("max", 10);
+
+                    if (request.getReturnDate() != null && !request.getReturnDate().isBlank()) {
+                        builder.queryParam("returnDate", request.getReturnDate());
+                    }
+
+                    return builder.build();
+                })
                 .header("Authorization", "Bearer " + accessToken)
                 .retrieve()
                 .bodyToMono(String.class)
@@ -76,19 +89,29 @@ public class FlightSearchService {
                 for (JsonNode offer : data) {
                     FlightSearchResponse flight = new FlightSearchResponse();
 
-                    // VERY SIMPLIFIED – just grabbing first segment for now
-                    JsonNode itinerary = offer.get("itineraries").get(0);
-                    JsonNode segment = itinerary.get("segments").get(0);
+                    JsonNode itinerary = offer.get("itineraries").get(0); // outbound only
+                    JsonNode segment = itinerary.get("segments").get(0);  // first leg
 
                     String departure = segment.get("departure").get("iataCode").asText();
                     String arrival = segment.get("arrival").get("iataCode").asText();
                     String carrier = segment.get("carrierCode").asText();
                     String price = offer.get("price").get("total").asText();
 
+                    // ✅ new fields
+                    String departureTime = segment.get("departure").get("at").asText();
+                    String arrivalTime = segment.get("arrival").get("at").asText();
+                    String duration = itinerary.get("duration").asText();
+                    int numberOfStops = itinerary.get("segments").size() - 1;
+
+                    // ✅ set all fields
                     flight.setDeparture(departure);
                     flight.setArrival(arrival);
                     flight.setAirline(carrier);
                     flight.setPrice(price);
+                    flight.setDepartureTime(departureTime);
+                    flight.setArrivalTime(arrivalTime);
+                    flight.setDuration(duration);
+                    flight.setNumberOfStops(numberOfStops);
 
                     results.add(flight);
                 }
@@ -99,4 +122,5 @@ public class FlightSearchService {
 
         return results;
     }
+
 }
