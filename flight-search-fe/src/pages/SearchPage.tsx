@@ -21,11 +21,18 @@ function SearchPage() {
             display: "flex",
             borderRadius: "10px",
             overflow: "hidden",
-            backgroundColor:"rgb(251, 251, 251)"
+            backgroundColor: "rgb(251, 251, 251)",
           }}
         >
-          <Box sx={{width:"65%", overflow:"hidden"}}>
-          <img src={AirplaneBackground} alt="Travel" style={{ height: "100%", transform:"scale(1.1) translateX(-20%)" }} />
+          <Box sx={{ width: "65%", overflow: "hidden" }}>
+            <img
+              src={AirplaneBackground}
+              alt="Travel"
+              style={{
+                height: "100%",
+                transform: "scale(1.1) translateX(-20%)",
+              }}
+            />
           </Box>
           <SearchModule />
         </Paper>
