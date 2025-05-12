@@ -1,7 +1,6 @@
 package com.esteban.flightsearch.flightsearch_api.controller;
 
 import com.esteban.flightsearch.flightsearch_api.service.AirportSearchService;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,19 +14,12 @@ public class AirportSearchController {
 
     private final AirportSearchService service;
 
-    @Value("${amadeus.clientId}")
-    private String clientId;
-
-    @Value("${amadeus.clientSecret}")
-    private String clientSecret;
-
     public AirportSearchController(AirportSearchService service) {
         this.service = service;
     }
 
     @GetMapping("/search")
     public List<String> searchAirports(@RequestParam String keyword) {
-        String token = service.getAccessToken(clientId, clientSecret);
-        return service.searchAirports(keyword, token);
+        return service.searchAirports(keyword);
     }
 }
