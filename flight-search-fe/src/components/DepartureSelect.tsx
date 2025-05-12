@@ -11,11 +11,12 @@ export default function DepartureSelect({ value, onChange }: DepartureSelectProp
   const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
+
     if (inputValue.length < 2) return;
 
     const fetchAirports = async () => {
       try {
-        const response = await fetch(`/api/airports/search?keyword=${inputValue}`);
+        const response = await fetch(`/api/airports/search?keyword=${inputValue.toLowerCase()}`); // <-- lowercase
         const data = await response.json();
     
         console.log("Fetched airport data:", data); // for debugging
@@ -31,12 +32,11 @@ export default function DepartureSelect({ value, onChange }: DepartureSelectProp
         setOptions([]);
       }
     };
-
-    const delayDebounce = setTimeout(fetchAirports, 300); // debounce input
-
+   
+    const delayDebounce = setTimeout(fetchAirports, 300);
     return () => clearTimeout(delayDebounce);
   }, [inputValue]);
-
+  
   return (
     <>
        <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
