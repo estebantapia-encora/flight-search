@@ -1,9 +1,5 @@
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import type { SelectChangeEvent } from "@mui/material/Select";
-import { Box, Typography } from "@mui/material";
+import {useState, useEffect} from "react";
+import { Box, Typography, Autocomplete, TextField } from "@mui/material";
 
 type DepartureSelectProps = {
   value: string;
@@ -11,29 +7,46 @@ type DepartureSelectProps = {
 };
 
 export default function DepartureSelect({ value, onChange }: DepartureSelectProps) {
-  const handleChange = (event: SelectChangeEvent) => {
-    onChange(event.target.value);
-  };
+  const [options, setOptions] = useState<string[]>([]);
+  const [inputValue, setInputValue] = useState("");
+
+  useEffect(() => {
+    if (inputValue.length < 2) return;
+
+    const fetchAirports = async () => {
+      try {
+        const response = await fetch(`/api/airports/search?keyword=${inputValue}`);
+        const data = await response.json();
+        setOptions(data); // e.g. ["Los Angeles (LAX)", "London Heathrow (LHR)"]
+      } catch (err) {
+        console.error("Failed to fetch airports", err);
+      }
+    };
+
+    const delayDebounce = setTimeout(fetchAirports, 300); // debounce input
+
+    return () => clearTimeout(delayDebounce);
+  }, [inputValue]);
 
   return (
     <>
-      <Box sx={{width: "100%", display: "flex", alignItems: "center" }}>
-      <Typography sx={{width:"25%", fontWeight:"300"}}>Departure Airport</Typography>
-        <FormControl sx={{ m: 1, minWidth: 150}} size="small">
-          <InputLabel id="departure-select-label">Where From?</InputLabel>
-          <Select
-            labelId="departure-select-label"
-            id="departure-select"
-            value={value}
-            name="origin"
-            onChange={handleChange}
-          >
-            <MenuItem value={"HMO"}>HMO</MenuItem>
-            <MenuItem value={"LAX"}>LAX</MenuItem>
-            <MenuItem value={"PHX"}>PHX</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
+       <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+      <Typography sx={{ width: "25%", fontWeight: "300" }}>
+        Departure Airport
+      </Typography>
+      <Autocomplete
+        sx={{ m: 1, width: 250 }}
+        size="small"
+        options={options}
+        value={value}
+        onInputChange={(_, newInput) => setInputValue(newInput)}
+        onChange={(_, newValue) => onChange(newValue || "")}
+        renderInput={(params) => (
+          <TextField {...params} label="Where From?" variant="outlined" />
+        )}
+        freeSolo
+      />
+    </Box>
     </>
   );
 }
