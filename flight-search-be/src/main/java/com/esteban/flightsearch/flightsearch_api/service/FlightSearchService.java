@@ -57,8 +57,8 @@ public class FlightSearchService {
                             .queryParam("destinationLocationCode", request.getDestinationLocationCode())
                             .queryParam("departureDate", request.getDepartureDate())
                             .queryParam("adults", request.getAdults())
-                            .queryParam("nonStop", request.isNonStop())
                             .queryParam("currencyCode", request.getCurrencyCode())
+                            .queryParam("nonStop", request.isNonStop())
                             .queryParam("max", 10);
 
                     if (request.getReturnDate() != null && !request.getReturnDate().isBlank()) {

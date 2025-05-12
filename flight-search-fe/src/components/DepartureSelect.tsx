@@ -1,31 +1,31 @@
-import * as React from "react";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import type { SelectChangeEvent } from "@mui/material/Select";
-import { Box } from "@mui/material";
-import {Typography} from "@mui/material";
+import { Box, Typography } from "@mui/material";
 
+type DepartureSelectProps = {
+  value: string;
+  onChange: (value: string) => void;
+};
 
-export default function DepartureSelect() {
-  const [from, setFrom] = React.useState("");
-
+export default function DepartureSelect({ value, onChange }: DepartureSelectProps) {
   const handleChange = (event: SelectChangeEvent) => {
-    setFrom(event.target.value);
+    onChange(event.target.value);
   };
 
   return (
     <>
       <Box sx={{width: "100%", display: "flex", alignItems: "center" }}>
-      <Typography style={{width:"25%", fontWeight:"300"}}>Departure Airport</Typography>
+      <Typography sx={{width:"25%", fontWeight:"300"}}>Departure Airport</Typography>
         <FormControl sx={{ m: 1, minWidth: 150}} size="small">
-          <InputLabel id="demo-select-small-label">Where From?</InputLabel>
+          <InputLabel id="departure-select-label">Where From?</InputLabel>
           <Select
-            labelId="demo-select-small-label"
-            id="demo-select-small"
-            value={from}
-            label="Where From?"
+            labelId="departure-select-label"
+            id="departure-select"
+            value={value}
+            name="origin"
             onChange={handleChange}
           >
             <MenuItem value={"HMO"}>HMO</MenuItem>
