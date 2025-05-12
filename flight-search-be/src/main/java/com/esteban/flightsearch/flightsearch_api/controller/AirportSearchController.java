@@ -27,7 +27,7 @@ public class AirportSearchController {
 
     @GetMapping("/search")
     public List<String> searchAirports(@RequestParam String keyword) {
-        String token = service.getAccessToken(clientId, clientSecret);
-        return service.searchAirports(keyword, token);
+        return service.searchAirports(keyword);
     }
+
 }
