@@ -26,15 +26,13 @@ public class FlightSearchService {
     private final ConcurrentHashMap<String, CachedResult> cache = new ConcurrentHashMap<>();
     private final long cacheTTL = 30 * 60 * 1000; // 30 minutes in milliseconds
 
-    @Value("${amadeus.clientId}")
-    private String clientId;
+    private final TokenService tokenService;
 
-    @Value("${amadeus.clientSecret}")
-    private String clientSecret;
-
-    public FlightSearchService(AmadeusApiConfig config) {
+    public FlightSearchService(AmadeusApiConfig config, TokenService tokenService) {
         this.webClient = config.getWebClient();
+        this.tokenService = tokenService;
     }
+
 
     public List<FlightSearchResponse> searchFlights(FlightSearchRequest request) {
 
@@ -49,18 +47,8 @@ public class FlightSearchService {
 
         System.out.println("🚀 Calling Amadeus API for: " + cacheKey);
         // 1. Get access token
-        String tokenJson = webClient.post()
-                .uri("/v1/security/oauth2/token")
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .body(org.springframework.web.reactive.function.BodyInserters.fromFormData("grant_type", "client_credentials")
-                        .with("client_id", clientId)
-                        .with("client_secret", clientSecret))
+        String accessToken = tokenService.getToken();
 
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
-
-        String accessToken = extractAccessToken(tokenJson);
 
         // 2. Search for flights
         String responseJson = webClient.get()
@@ -92,15 +80,6 @@ public class FlightSearchService {
         // ✅ Cache the result
         cache.put(cacheKey, new CachedResult(result, System.currentTimeMillis()));
         return result;
-    }
-
-    private String extractAccessToken(String json) {
-        try {
-            JsonNode node = objectMapper.readTree(json);
-            return node.get("access_token").asText();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to extract access token", e);
-        }
     }
 
     private List<FlightSearchResponse> extractFlightOffers(String json) {
