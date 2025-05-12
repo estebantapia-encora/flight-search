@@ -15,6 +15,7 @@ import java.util.List;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.Duration;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Service
@@ -22,6 +23,8 @@ public class FlightSearchService {
 
     private final WebClient webClient;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ConcurrentHashMap<String, CachedResult> cache = new ConcurrentHashMap<>();
+    private final long cacheTTL = 30 * 60 * 1000; // 30 minutes in milliseconds
 
     @Value("${amadeus.clientId}")
     private String clientId;
@@ -34,6 +37,17 @@ public class FlightSearchService {
     }
 
     public List<FlightSearchResponse> searchFlights(FlightSearchRequest request) {
+
+
+        String cacheKey = buildCacheKey(request);
+
+        CachedResult cached = cache.get(cacheKey);
+        if (cached != null && !cached.isExpired()) {
+            System.out.println("✅ Using cached result for: " + cacheKey);
+            return cached.data;
+        }
+
+        System.out.println("🚀 Calling Amadeus API for: " + cacheKey);
         // 1. Get access token
         String tokenJson = webClient.post()
                 .uri("/v1/security/oauth2/token")
@@ -72,7 +86,12 @@ public class FlightSearchService {
                 .bodyToMono(String.class)
                 .block();
 
-        return extractFlightOffers(responseJson);
+
+        List<FlightSearchResponse> result = extractFlightOffers(responseJson);
+
+        // ✅ Cache the result
+        cache.put(cacheKey, new CachedResult(result, System.currentTimeMillis()));
+        return result;
     }
 
     private String extractAccessToken(String json) {
@@ -148,6 +167,30 @@ public class FlightSearchService {
         }
 
         return results;
+    }
+    private String buildCacheKey(FlightSearchRequest req) {
+        return String.join("|",
+                req.getOriginLocationCode(),
+                req.getDestinationLocationCode(),
+                req.getDepartureDate(),
+                req.getReturnDate() != null ? req.getReturnDate() : "",
+                String.valueOf(req.getAdults()),
+                req.getCurrencyCode(),
+                String.valueOf(req.isNonStop())
+        );
+    }
+    private static class CachedResult {
+        List<FlightSearchResponse> data;
+        long timestamp;
+
+        CachedResult(List<FlightSearchResponse> data, long timestamp) {
+            this.data = data;
+            this.timestamp = timestamp;
+        }
+
+        boolean isExpired() {
+            return System.currentTimeMillis() - timestamp > 10 * 60 * 1000;
+        }
     }
 
 }
