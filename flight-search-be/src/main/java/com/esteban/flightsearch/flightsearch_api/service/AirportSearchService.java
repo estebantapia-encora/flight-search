@@ -4,7 +4,6 @@ import com.esteban.flightsearch.flightsearch_api.config.AmadeusApiConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
@@ -14,33 +13,16 @@ import java.util.List;
 public class AirportSearchService {
 
     private final WebClient webClient;
+    private final TokenService tokenService;
 
-    public AirportSearchService(AmadeusApiConfig config) {
+    public AirportSearchService(AmadeusApiConfig config, TokenService tokenService) {
         this.webClient = config.getWebClient();
+        this.tokenService = tokenService;
     }
 
-    public String getAccessToken(String clientId, String clientSecret) {
-        String tokenJson = webClient.post()
-                .uri("/v1/security/oauth2/token")
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .body(BodyInserters
-                        .fromFormData("grant_type", "client_credentials")
-                        .with("client_id", clientId)
-                        .with("client_secret", clientSecret))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+    public List<String> searchAirports(String keyword) {
+        String token = tokenService.getToken();
 
-        try {
-            ObjectMapper mapper = new ObjectMapper();
-            JsonNode node = mapper.readTree(tokenJson);
-            return node.get("access_token").asText();
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to extract token", e);
-        }
-    }
-
-    public List<String> searchAirports(String keyword, String token) {
         String json = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v1/reference-data/locations")
