@@ -73,8 +73,8 @@ export default function SearchModule() {
             }}
           ></div>
         </div>
-        <DepartureSelect value={originLocationCode} onChange={setOriginLocationCode}/>
-        <ArrivalSelect value={destinationLocationCode} onChange={setDestinationLocationCode}/>
+        <DepartureSelect onChange={setOriginLocationCode}/>
+        <ArrivalSelect onChange={setDestinationLocationCode}/>
         <DepartureDate value={departureDate} onChange={setDepartureDate} />
         <ReturnDate value={returnDate} onChange={setReturnDate} />
         <AdultNumber value={adults} onChange={setAdults} />

@@ -1,41 +1,51 @@
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
-import type { SelectChangeEvent } from "@mui/material/Select";
-import { Box, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Box, Typography, Autocomplete, TextField } from "@mui/material";
 
 type ArrivalSelectProps = {
-  value: string;
-  onChange: (value: string) => void;
+  onChange: (value: string) => void; // gets called with IATA code
 };
 
-export default function ArrivalSelect({ value, onChange }: ArrivalSelectProps) {
-  const handleChange = (event: SelectChangeEvent) => {
-    onChange(event.target.value);
-  };
+export default function ArrivalSelect({
+  onChange,
+}: ArrivalSelectProps) {
+  
+  const [options, setOptions] = useState<string[]>([]);
+  const [searchText, setSearchText] = useState("");
+
+  useEffect(() => {
+    if (searchText.length < 2) return;
+
+    const fetchAirports = async () => {
+      const response = await fetch(`/api/airports/search?keyword=${searchText.toUpperCase()}`);
+      const data = await response.json();
+      setOptions(Array.isArray(data) ? data : []);
+    };
+  
+    const delayDebounce = setTimeout(fetchAirports, 300);
+    return () => clearTimeout(delayDebounce);
+  }, [searchText]);
 
   return (
-    <>
-      <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-        <Typography sx={{ width: "25%", fontWeight: "300" }}>
-          Arrival Airport
-        </Typography>
-        <FormControl sx={{ m: 1, minWidth: 150 }} size="small">
-          <InputLabel id="arrival-select-label">Where To?</InputLabel>
-          <Select
-            labelId="arrival-select-label"
-            id="arrival-select"
-            value={value}
-            name="destination"
-            onChange={handleChange}
-          >
-            <MenuItem value={"HMO"}>HMO</MenuItem>
-            <MenuItem value={"LAX"}>LAX</MenuItem>
-            <MenuItem value={"PHX"}>PHX</MenuItem>
-          </Select>
-        </FormControl>
-      </Box>
-    </>
+    <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+      <Typography sx={{ width: "25%", fontWeight: "300" }}>
+        Arrival Airport
+      </Typography>
+      <Autocomplete
+        sx={{ m: 1, width: 250 }}
+        size="small"
+        options={options}
+        inputValue={searchText}
+  onInputChange={(_, newInput) => setSearchText(newInput)}
+  onChange={(_, newValue) => {
+    const match = /\(([^)]+)\)/.exec(newValue || "");
+    const iataCode = match ? match[1] : "";
+    onChange(iataCode);
+  }}
+        renderInput={(params) => (
+          <TextField {...params} label="Where To?" variant="outlined" />
+        )}
+        freeSolo
+      />
+    </Box>
   );
 }
