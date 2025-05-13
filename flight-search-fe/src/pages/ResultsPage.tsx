@@ -29,7 +29,6 @@ export default function ResultsPage() {
           alignItems: "center",
           backgroundImage: `url(${Airplane})`,
           backgroundSize: "100%",
-          backgroundPosition: "-175% center",
           backgroundColor: "rgba(210, 225, 255, 0.83)",
           backgroundBlendMode: "soft-light",
           width: "100%",
@@ -72,16 +71,16 @@ export default function ResultsPage() {
           <Typography
             variant="h5"
             gutterBottom
-            sx={{ fontWeight: "500", width: "100%", fontSize: "22px" }}
+            sx={{ fontWeight: "500", width: "65%", fontSize: "22px" }}
           >
             Departing Flights
           </Typography>
           {flights.length === 0 ? (
             <p>No flights found.</p>
           ) : (
-            <ul style={{ width: "100%" }}>
+            <div style={{ width: "65%" }}>
               {flights.map((flight, index) => (
-                <Card key={index} sx={{ mb: 4, width: "65%" }}>
+                <Card key={index} sx={{ mb: 4, width: "100%" }}>
                   <CardContent
                     sx={{
                       display: "flex",
@@ -139,7 +138,7 @@ export default function ResultsPage() {
                   </CardContent>
                 </Card>
               ))}
-            </ul>
+            </div>
           )}
         </div>
       </Paper>
