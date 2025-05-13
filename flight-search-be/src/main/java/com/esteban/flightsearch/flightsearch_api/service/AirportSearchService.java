@@ -28,7 +28,6 @@ public class AirportSearchService {
         String token = tokenService.getToken();
 
         System.out.println("🔍 Searching airports for: " + keyword); // Debug
-
         String json = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v1/reference-data/locations")
