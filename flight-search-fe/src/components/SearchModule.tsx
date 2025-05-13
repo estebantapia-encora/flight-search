@@ -1,5 +1,8 @@
 import { useState } from "react";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { setSearchResults } from "../redux/searchResultsSlice";
 import { Box } from "@mui/material";
 import DepartureSelect from "./DepartureSelect";
 import ArrivalSelect from "./ArrivalSelect";
@@ -20,6 +23,36 @@ export default function SearchModule() {
   const [adults, setAdults] = useState(1);
   const [currencyCode, setCurrencyCode] = useState("");
   const [nonStop, setNonStop] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleSearch = async () => {
+    const body = {
+      originLocationCode,
+      destinationLocationCode,
+      departureDate: departureDate?.format("YYYY-MM-DD"),
+      returnDate: returnDate?.format("YYYY-MM-DD") || null,
+      adults,
+      currencyCode,
+      nonStop,
+    };
+
+    try {
+      const response = await fetch("/api/flight-search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+      console.log("Flight results:", data);
+      dispatch(setSearchResults(data)); // Save results to Redux
+      navigate("/results");
+      // TODO: store results or navigate to results page
+    } catch (error) {
+      console.error("Flight search failed:", error);
+    }
+  };
 
   useEffect(() => {
     console.log("Origin:", originLocationCode);
@@ -73,14 +106,14 @@ export default function SearchModule() {
             }}
           ></div>
         </div>
-        <DepartureSelect onChange={setOriginLocationCode}/>
-        <ArrivalSelect onChange={setDestinationLocationCode}/>
+        <DepartureSelect onChange={setOriginLocationCode} />
+        <ArrivalSelect onChange={setDestinationLocationCode} />
         <DepartureDate value={departureDate} onChange={setDepartureDate} />
         <ReturnDate value={returnDate} onChange={setReturnDate} />
         <AdultNumber value={adults} onChange={setAdults} />
         <Currency value={currencyCode} onChange={setCurrencyCode} />
         <NonStop value={nonStop} onChange={setNonStop} />
-        <SearchButton />
+        <SearchButton onClick={handleSearch} />
       </Box>
     </>
   );
