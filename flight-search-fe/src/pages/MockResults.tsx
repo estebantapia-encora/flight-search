@@ -1,72 +1,21 @@
-import { useEffect, useState } from "react";
-import { Box, Card, CardContent, Typography, Button } from "@mui/material";
-import { Paper } from "@mui/material";
+import { useSelector } from "react-redux";
+import type { RootState } from "../redux/store";
+import {
+  Box,
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  Paper,
+} from "@mui/material";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import ReturnToSearchButton from "../components/ReturnToSearchButton";
 import Airplane from "../assets/AirplaneBackground.jpg";
 
-type Flight = {
-  id: string;
-  departureTime: string;
-  arrivalTime: string;
-  from: string;
-  to: string;
-  duration: string;
-  airline: string;
-  stops: string;
-  currency: string;
-  price: number;
-  pricePerPerson: number;
-};
-
 export default function ReturnResultsPage() {
-  const [flights, setFlights] = useState<Flight[]>([]);
-
-  useEffect(() => {
-    // Replace this with a real fetch call later
-    const Flights: Flight[] = [
-      {
-        id: "1",
-        departureTime: "1:25pm",
-        arrivalTime: "4:50pm",
-        from: "PHX",
-        to: "LAX",
-        duration: "1h 25m",
-        airline: "Delta",
-        stops: "1",
-        currency: "MXN",
-        price: 140.0,
-        pricePerPerson: 40.0,
-      },
-      {
-        id: "2",
-        departureTime: "1:25pm",
-        arrivalTime: "4:50pm",
-        from: "PHX",
-        to: "LAX",
-        duration: "1h 30m",
-        airline: "American Airlines",
-        stops: "Nonstop",
-        currency: "MXN",
-        price: 120.0,
-        pricePerPerson: 40.0,
-      },
-      {
-        id: "3",
-        departureTime: "1:25pm",
-        arrivalTime: "4:50pm",
-        from: "PHX",
-        to: "LAX",
-        duration: "1h 30m",
-        airline: "Aeromexico",
-        stops: "2",
-        currency: "MXN",
-        price: 120.0,
-        pricePerPerson: 40.0,
-      },
-    ];
-    setFlights(Flights);
-  }, []);
+  const flights = useSelector(
+    (state: RootState) => state.searchResults.results
+  );
 
   return (
     <Box className="background-color">
