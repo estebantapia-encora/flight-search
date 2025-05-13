@@ -15,7 +15,7 @@ export default function DepartureSelect({ value, onChange }: DepartureSelectProp
 
     const fetchAirports = async () => {
       try {
-        const response = await fetch(`/api/airports/search?keyword=${inputValue}`);
+        const response = await fetch(`/api/airports/search?keyword=${inputValue.toUpperCase()}`);
         const data = await response.json();
         setOptions(data); // e.g. ["Los Angeles (LAX)", "London Heathrow (LHR)"]
       } catch (err) {
@@ -30,15 +30,13 @@ export default function DepartureSelect({ value, onChange }: DepartureSelectProp
 
   return (
     <>
-       <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-      <Typography sx={{ width: "25%", fontWeight: "300" }}>
-        Departure Airport
-      </Typography>
+  <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+      <Typography sx={{ width: "25%", fontWeight: "300" }}>Departure Airport</Typography>
       <Autocomplete
         sx={{ m: 1, width: 250 }}
         size="small"
         options={options}
-        value={value}
+        inputValue={inputValue}
         onInputChange={(_, newInput) => setInputValue(newInput)}
         onChange={(_, newValue) => onChange(newValue || "")}
         renderInput={(params) => (
