@@ -35,8 +35,8 @@ export default function DepartureSelect({
         setOptions([]);
       }
     };
-
     const delayDebounce = setTimeout(fetchAirports, 200);
+
     return () => clearTimeout(delayDebounce);
   }, [value]);
 
