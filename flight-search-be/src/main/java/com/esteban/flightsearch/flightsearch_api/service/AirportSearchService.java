@@ -31,7 +31,7 @@ public class AirportSearchService {
         String json = webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/v1/reference-data/locations")
-                        .queryParam("subType", "AIRPORT")
+                        .queryParam("subType", List.of("AIRPORT", "CITY"))
                         .queryParam("keyword", keyword)
                         .queryParam("page[limit]", 5)
                         .queryParam("view", "FULL")
