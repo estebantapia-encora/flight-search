@@ -1,17 +1,17 @@
-import { useNavigate } from "react-router-dom";
 import Button from "@mui/material/Button";
 
-export default function SearchButton() {
-  const navigate = useNavigate();
-  const handleClick = () => {
-    navigate("/results");
-  };
+type SearchButtonProps = {
+  onClick: () => void;
+};
+
+export default function SearchButton({onClick}:SearchButtonProps) {
+
   return (
     <>
       <Button 
       variant="contained" 
       size="large" 
-      onClick={handleClick}
+      onClick={onClick}
       sx={{ width: "15%" }}>
         Search
       </Button>
