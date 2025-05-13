@@ -1,50 +1,66 @@
-import {useState, useEffect} from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography, Autocomplete, TextField } from "@mui/material";
 
 type DepartureSelectProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: string; // controlled input from parent
+  onChange: (value: string) => void; // gets called with IATA code
 };
 
-export default function DepartureSelect({ value, onChange }: DepartureSelectProps) {
+export default function DepartureSelect({
+  value,
+  onChange,
+}: DepartureSelectProps) {
   const [options, setOptions] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    if (inputValue.length < 2) return;
+    if (value.length < 2) return;
 
     const fetchAirports = async () => {
       try {
-        const response = await fetch(`/api/airports/search?keyword=${inputValue.toUpperCase()}`);
+        const response = await fetch(
+          `/api/airports/search?keyword=${value.toUpperCase()}`
+        );
         const data = await response.json();
-        setOptions(data); // e.g. ["Los Angeles (LAX)", "London Heathrow (LHR)"]
+
+        console.log("Fetched airport data:", data); // Debug
+
+        if (Array.isArray(data)) {
+          setOptions(data);
+        } else {
+          console.error("Expected array but got:", data);
+          setOptions([]);
+        }
       } catch (err) {
         console.error("Failed to fetch airports", err);
+        setOptions([]);
       }
     };
 
-    const delayDebounce = setTimeout(fetchAirports, 300); // debounce input
-
+    const delayDebounce = setTimeout(fetchAirports, 200);
     return () => clearTimeout(delayDebounce);
-  }, [inputValue]);
+  }, [value]);
 
   return (
-    <>
-  <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-      <Typography sx={{ width: "25%", fontWeight: "300" }}>Departure Airport</Typography>
+    <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+      <Typography sx={{ width: "25%", fontWeight: "300" }}>
+        Departure Airport
+      </Typography>
       <Autocomplete
         sx={{ m: 1, width: 250 }}
         size="small"
         options={options}
-        inputValue={inputValue}
-        onInputChange={(_, newInput) => setInputValue(newInput)}
-        onChange={(_, newValue) => onChange(newValue || "")}
+        inputValue={value}
+        onInputChange={(_, newInput) => onChange(newInput)}
+        onChange={(_, newValue) => {
+          const match = /\(([^)]+)\)/.exec(newValue || "");
+          const iataCode = match ? match[1] : "";
+          onChange(iataCode);
+        }}
         renderInput={(params) => (
           <TextField {...params} label="Where From?" variant="outlined" />
         )}
         freeSolo
       />
     </Box>
-    </>
   );
 }
