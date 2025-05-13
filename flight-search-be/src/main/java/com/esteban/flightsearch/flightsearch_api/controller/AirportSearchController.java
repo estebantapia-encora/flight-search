@@ -20,6 +20,7 @@ public class AirportSearchController {
 
     @GetMapping("/search")
     public List<String> searchAirports(@RequestParam String keyword) {
+        System.out.println("🔍 Backend received keyword: " + keyword);
         return service.searchAirports(keyword);
     }
 }
