@@ -25,8 +25,10 @@ export default function SearchModule() {
   const [nonStop, setNonStop] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   const handleSearch = async () => {
+    setLoading(true);
     const body = {
       originLocationCode,
       destinationLocationCode,
@@ -51,6 +53,8 @@ export default function SearchModule() {
       // TODO: store results or navigate to results page
     } catch (error) {
       console.error("Flight search failed:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -113,7 +117,7 @@ export default function SearchModule() {
         <AdultNumber value={adults} onChange={setAdults} />
         <Currency value={currencyCode} onChange={setCurrencyCode} />
         <NonStop value={nonStop} onChange={setNonStop} />
-        <SearchButton onClick={handleSearch} />
+        <SearchButton onClick={handleSearch} loading={loading} />
       </Box>
     </>
   );
