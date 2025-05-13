@@ -1,24 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import type { Flight } from "../types/Flight";
 
-
-interface Flight {
-  id: string;
-  departureTime: string;
-  arrivalTime: string;
-  from: string;
-  to: string;
-  duration: string;
-  airline: string;
-  stops: string;
-  currency: string;
-  price: number;
-  pricePerPerson: number;
-}
 
 interface SearchResultsState {
   results: Flight[];
 }
+
 
 const initialState: SearchResultsState = {
   results: [],
