@@ -40,7 +40,7 @@ export default function SearchModule() {
     };
 
     try {
-      const response = await fetch("/api/flight-search", {
+      const response = await fetch("/api/flight/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
