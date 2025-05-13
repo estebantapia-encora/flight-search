@@ -1,9 +1,9 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Box, Typography, Autocomplete, TextField } from "@mui/material";
 
 type DepartureSelectProps = {
-  value: string;
-  onChange: (value: string) => void;
+  value: string; // controlled input from parent
+  onChange: (value: string) => void; // gets called with IATA code
 };
 
 export default function DepartureSelect({
@@ -11,20 +11,18 @@ export default function DepartureSelect({
   onChange,
 }: DepartureSelectProps) {
   const [options, setOptions] = useState<string[]>([]);
-  const [inputValue, setInputValue] = useState("");
 
   useEffect(() => {
-    if (inputValue.length < 2) return;
+    if (value.length < 2) return;
 
     const fetchAirports = async () => {
       try {
         const response = await fetch(
-          `/api/airports/search?keyword=${inputValue.toUpperCase()}`
+          `/api/airports/search?keyword=${value.toUpperCase()}`
         );
-
         const data = await response.json();
 
-        console.log("Fetched airport data:", data); // for debugging
+        console.log("Fetched airport data:", data); // Debug
 
         if (Array.isArray(data)) {
           setOptions(data);
@@ -38,33 +36,31 @@ export default function DepartureSelect({
       }
     };
 
-    const delayDebounce = setTimeout(fetchAirports, 300);
+    const delayDebounce = setTimeout(fetchAirports, 200);
     return () => clearTimeout(delayDebounce);
-  }, [inputValue]);
+  }, [value]);
 
   return (
-    <>
-      <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-        <Typography sx={{ width: "25%", fontWeight: "300" }}>
-          Departure Airport
-        </Typography>
-        <Autocomplete
-         sx={{ m: 1, width: 250 }}
-         size="small"
-         options={options}
-         inputValue={inputValue} // sync input with value
-         onInputChange={(_, newInput) => setInputValue(newInput)}
-         onChange={(_, newValue) => {
-           const match = /\(([^)]+)\)/.exec(newValue || "");
-           const iataCode = match ? match[1] : "";
-           onChange(iataCode);
-         }}
-         renderInput={(params) => (
-           <TextField {...params} label="Where From?" variant="outlined" />
-         )}
-         freeSolo
-        />
-      </Box>
-    </>
+    <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+      <Typography sx={{ width: "25%", fontWeight: "300" }}>
+        Departure Airport
+      </Typography>
+      <Autocomplete
+        sx={{ m: 1, width: 250 }}
+        size="small"
+        options={options}
+        inputValue={value}
+        onInputChange={(_, newInput) => onChange(newInput)}
+        onChange={(_, newValue) => {
+          const match = /\(([^)]+)\)/.exec(newValue || "");
+          const iataCode = match ? match[1] : "";
+          onChange(iataCode);
+        }}
+        renderInput={(params) => (
+          <TextField {...params} label="Where From?" variant="outlined" />
+        )}
+        freeSolo
+      />
+    </Box>
   );
 }
