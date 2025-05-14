@@ -23,7 +23,6 @@ export type Flight = {
     basePrice: string;
     cabin: string;
     includedCheckedBagsQuantity: string;
-    includedCabinBagsQuantity: string;
     amenities: Amenity[];
   };
   
