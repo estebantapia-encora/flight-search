@@ -14,9 +14,9 @@ import Airplane from "../assets/AirplaneBackground.jpg";
 import "../App.css";
 
 export default function ResultsPage() {
-  const flights = useSelector(
-    (state: RootState) => state.searchResults.results
-  );
+  const allFlights = useSelector((s: RootState) => s.searchResults.results);
+  const flights = allFlights.slice(0, 6);
+
 
   return (
     <Box
