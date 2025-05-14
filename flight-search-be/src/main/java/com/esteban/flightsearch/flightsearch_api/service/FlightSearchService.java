@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.UUID;
 
 
 @Service
@@ -90,6 +91,13 @@ public class FlightSearchService {
             if (data != null && data.isArray()) {
                 for (JsonNode offer : data) {
                     FlightSearchResponse flight = new FlightSearchResponse();
+                    // if Amadeus returns its own "id" field:
+                    if (offer.has("id")) {
+                        flight.setId(offer.get("id").asText());
+                    } else {
+                        // fallback to a generated UUID
+                        flight.setId(UUID.randomUUID().toString());
+                    }
 
                     JsonNode itinerary = offer.get("itineraries").get(0); // outbound only
                     JsonNode segment = itinerary.get("segments").get(0);  // first leg
