@@ -109,9 +109,13 @@ export default function ResultsPage() {
                         View Details
                       </Button>
                     </Box>
-                    <Box>
+                    <Box sx={{ display: "flex", flexDirection: "column", alignItems:"center" }}>
                       {" "}
                       <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                        {flight.formattedTimeRange}
+                      </Typography>
+                      <Typography sx={{ fontWeight: "400", fontSize: "16px" }}>
+                        {" "}
                         {flight.formattedDuration}
                       </Typography>
                     </Box>
