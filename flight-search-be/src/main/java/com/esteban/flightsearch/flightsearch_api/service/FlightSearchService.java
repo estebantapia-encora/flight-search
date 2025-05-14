@@ -3,6 +3,7 @@ package com.esteban.flightsearch.flightsearch_api.service;
 import com.esteban.flightsearch.flightsearch_api.config.AmadeusApiConfig;
 import com.esteban.flightsearch.flightsearch_api.model.FlightSearchRequest;
 import com.esteban.flightsearch.flightsearch_api.model.FlightSearchResponse;
+import com.esteban.flightsearch.flightsearch_api.model.SegmentSummary;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -17,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.UUID;
+import com.esteban.flightsearch.flightsearch_api.model.AmenitySummary;
 
 
 @Service
@@ -99,9 +101,83 @@ public class FlightSearchService {
                         flight.setId(UUID.randomUUID().toString());
                     }
 
-                    JsonNode itinerary = offer.get("itineraries").get(0); // outbound only
-                    JsonNode segment = itinerary.get("segments").get(0);  // first leg
+                    JsonNode itinerary = offer.get("itineraries").get(0);
+                    JsonNode segment = itinerary.get("segments").get(0);
+                    List<SegmentSummary> segmentSummaries = new ArrayList<>();
+                    JsonNode segments = itinerary.get("segments");
 
+                    for (JsonNode seg : segments) {
+                        SegmentSummary summary = new SegmentSummary();
+                        summary.setDepartureTime(seg.get("departure").get("at").asText());
+                        summary.setDepartureLoc(seg.get("departure").get("iataCode").asText());
+                        summary.setArrivalTime(seg.get("arrival").get("at").asText());
+                        summary.setArrivalLoc(seg.get("arrival").get("iataCode").asText());
+                        summary.setCarrierCode(seg.get("carrierCode").asText());
+                        summary.setFlightNumber(seg.get("number").asText());
+
+                        // Optional enrichments from travelerPricings
+                        JsonNode travelerPricings = offer.get("travelerPricings");
+                        if (travelerPricings != null && travelerPricings.isArray() && travelerPricings.size() > 0) {
+                            JsonNode firstTraveler = travelerPricings.get(0);
+                            JsonNode priceNode = firstTraveler.get("price");
+                            if (priceNode != null && priceNode.has("base")) {
+                                summary.setBasePrice(priceNode.get("base").asText());
+                            }
+
+                            JsonNode fareDetails = firstTraveler.get("fareDetailsBySegment");
+                            if (fareDetails != null && fareDetails.isArray()) {
+                                // Try to find matching segmentId
+                                String segId = seg.get("id").asText();
+                                for (JsonNode detail : fareDetails) {
+                                    if (detail.has("segmentId") && detail.get("segmentId").asText().equals(segId)) {
+                                        if (detail.has("cabin")) {
+                                            summary.setCabin(detail.get("cabin").asText());
+                                        }
+
+                                        // ✅ Included Checked Bags
+                                        JsonNode checkedBags = detail.get("includedCheckedBags");
+                                        if (checkedBags != null && checkedBags.has("quantity")) {
+                                            summary.setIncludedCheckedBagsQuantity(checkedBags.get("quantity").asText());
+                                        } else {
+                                            summary.setIncludedCheckedBagsQuantity("N/A");
+                                        }
+
+                                        // ✅ Included Cabin Bags
+                                        JsonNode cabinBags = detail.get("includedCabinBags");
+                                        if (cabinBags != null && cabinBags.has("quantity")) {
+                                            summary.setIncludedCabinBagsQuantity(cabinBags.get("quantity").asText());
+                                        } else {
+                                            summary.setIncludedCabinBagsQuantity("N/A");
+                                        }
+
+                                        // ✅ Baggage Amenity Description
+                                        List<AmenitySummary> amenitySummaries = new ArrayList<>();
+                                        JsonNode amenities = detail.get("amenities");
+
+                                        if (amenities != null && amenities.isArray()) {
+                                            for (JsonNode amenity : amenities) {
+                                                if (amenity.has("description") && amenity.has("isChargeable") && amenity.has("amenityType")) {
+                                                    AmenitySummary a = new AmenitySummary();
+                                                    a.setDescription(amenity.get("description").asText());
+                                                    a.setChargeable(amenity.get("isChargeable").asBoolean());
+                                                    a.setAmenityType(amenity.get("amenityType").asText());
+                                                    amenitySummaries.add(a);
+                                                }
+                                            }
+                                        }
+
+                                        summary.setAmenities(amenitySummaries);
+
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        segmentSummaries.add(summary);
+
+                    }
+                    flight.setSegments(segmentSummaries);
                     String departure = segment.get("departure").get("iataCode").asText();
                     String arrival = segment.get("arrival").get("iataCode").asText();
                     String carrier = segment.get("carrierCode").asText();
