@@ -17,7 +17,6 @@ export default function ResultsPage() {
   const allFlights = useSelector((s: RootState) => s.searchResults.results);
   const flights = allFlights.slice(0, 6);
 
-
   return (
     <Box
       sx={{ padding: "0 100px", backgroundColor: "rgba(74, 131, 229, 0.556)" }}
