@@ -68,7 +68,6 @@ function DetailsPage() {
             Base Price: {flight.currency} ${segment.basePrice}
           </Typography>
           <Typography>
-            Baggage: {segment.includedCabinBagsQuantity} Cabin,{" "}
             {segment.includedCheckedBagsQuantity} Checked
           </Typography>
 

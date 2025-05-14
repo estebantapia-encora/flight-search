@@ -112,12 +112,14 @@ export default function ResultsPage() {
                     <Box>
                       {" "}
                       <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                        {flight.from} → {flight.to} ({flight.formattedDuration})
+                        {flight.formattedDuration}
                       </Typography>
                     </Box>
                     <Box>
                       <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                        Stops: {flight.numberOfStops} ({flight.stops})
+                        {flight.numberOfStops === 0
+                          ? "Non-stop"
+                          : `Stops: ${flight.numberOfStops} (${flight.stops})`}
                       </Typography>
                     </Box>
                     <Box>
