@@ -120,16 +120,16 @@ export default function ResultsPage() {
                       </Typography>
                     </Box>
                     <Box>
-                      <Typography sx={{ fontWeight: 600 }}>
+                      <Typography sx={{ fontWeight: 600 }} component="div">
                         {flight.currency} ${flight.price}
-                        <Typography sx={{ display: "inline" }}>
+                        <Typography sx={{ display: "inline" }} component="span">
                           {" "}
                           Total
                         </Typography>
                       </Typography>
-                      <Typography sx={{ fontWeight: 600 }}>
+                      <Typography sx={{ fontWeight: 600 }} component="div">
                         {flight.currency} ${flight.price}
-                        <Typography sx={{ display: "inline" }}>
+                        <Typography sx={{ display: "inline" }} component="span">
                           {" "}
                           Per Traveler
                         </Typography>
