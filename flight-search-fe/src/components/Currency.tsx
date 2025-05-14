@@ -26,6 +26,7 @@ export default function Currency({ value, onChange }: CurrencyProps) {
           <Select
             labelId="currency-label"
             id="currency"
+            label="Currency" // ✅ Needed to animate the label
             name="currency"
             value={value}
             onChange={handleChange}
