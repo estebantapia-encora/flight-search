@@ -1,4 +1,5 @@
 export type Flight = {
+    id: string;
     departure: string;
     arrival: string;
     airline: string;
@@ -9,5 +10,25 @@ export type Flight = {
     currency: string;
     numberOfStops: number;
     stops: string;
+    segments: Segment[];
   };
   
+  export type Segment = {
+    departureTime: string;
+    departureLoc: string;
+    arrivalTime: string;
+    arrivalLoc: string;
+    carrierCode: string;
+    flightNumber: string;
+    basePrice: string;
+    cabin: string;
+    includedCheckedBagsQuantity: string;
+    includedCabinBagsQuantity: string;
+    amenities: Amenity[];
+  };
+  
+  export type Amenity = {
+    description: string;
+    amenityType: string;
+    chargeable: boolean;
+  };
