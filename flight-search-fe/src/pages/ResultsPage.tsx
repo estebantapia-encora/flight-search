@@ -11,11 +11,13 @@ import {
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import ReturnToSearchButton from "../components/ReturnToSearchButton";
 import Airplane from "../assets/AirplaneBackground.jpg";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 export default function ResultsPage() {
   const allFlights = useSelector((s: RootState) => s.searchResults.results);
   const flights = allFlights.slice(0, 6);
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -102,7 +104,7 @@ export default function ResultsPage() {
                         variant="outlined"
                         size="medium"
                         sx={{ mt: 1 }}
-                        onClick={() => console.log("Go to details", flight.id)}
+                        onClick={() => navigate(`/details/${flight.id}`)}
                       >
                         View Details
                       </Button>
