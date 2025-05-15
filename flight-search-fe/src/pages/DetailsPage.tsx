@@ -95,7 +95,6 @@ function DetailsPage() {
             }}
           >
             {flight.segments.map((segment: Segment, index: number) => (
-
               <Card
                 key={index}
                 sx={{
@@ -105,66 +104,84 @@ function DetailsPage() {
                   border: "1px solid #ccc",
                   backgroundColor: "white",
                   width: "85%",
-                  height: "240px",
+                  height: "250px",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
                 }}
               >
-                <Typography
-                  style={{
-                    paddingLeft: "12px",
-                    fontSize: "19px",
-                    fontWeight: "600",
-                  }}
-                >
-                  Segment {index + 1} - {segment.departureLoc} →{" "}
-                  {segment.arrivalLoc}
-                </Typography>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "0 12px 12px 12px",
-                  }}
-                >
-                  <Box>
-                    <Typography>
-                      <span style={{ fontWeight: "500" }}>
-                        {formatDate(segment.departureTime)}{" "}
-                      </span>
-                      {formatTime(segment.departureTime)} -{" "}
-                      <span style={{ fontWeight: "500" }}>
-                        {formatDate(segment.departureTime)}{" "}
-                      </span>
-                      {formatTime(segment.arrivalTime)}
+                <Box sx={{ display: "flex", pl: 3, pr: 3, height: "100%" }}>
+                  <Box sx={{ height: "100%" }}>
+                    <Typography
+                      style={{
+                        fontSize: "19px",
+                        fontWeight: "600",
+                        height: "13%",
+                      }}
+                    >
+                      Segment {index + 1} - {segment.departureLoc} →{" "}
+                      {segment.arrivalLoc}
                     </Typography>
-                    {index < flight.segments.length - 1 && (
-                      <Typography variant="body2" sx={{ color: "gray" }}>
-                        Layover: {flight.layoverDurations[index]}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        height: "90%",
+                        pr: 5,
+                        flexDirection: "column",
+                        justifyContent: "space-between",
+                        borderRight: "1px solid rgba(213, 213, 213, 0.84)",
+                      }}
+                    >
+                      <Typography>
+                        <span style={{ fontWeight: "500" }}>
+                          {formatDate(segment.departureTime)}{" "}
+                        </span>
+                        {formatTime(segment.departureTime)} -{" "}
+                        <span style={{ fontWeight: "500" }}>
+                          {formatDate(segment.departureTime)}{" "}
+                        </span>
+                        {formatTime(segment.arrivalTime)}
                       </Typography>
-                    )}
-                    <Typography>
-                      <span style={{ fontWeight: "500" }}>Airline Code:</span>{" "}
-                      {segment.carrierCode}
-                    </Typography>
-                    <Typography>
-                      <span style={{ fontWeight: "500" }}>Flight Number:</span>{" "}
-                      {segment.flightNumber}
-                    </Typography>
-                    <Typography>
-                      <span style={{ fontWeight: "500" }}> Cabin Class:</span>{" "}
-                      {segment.cabin}
-                    </Typography>
-                    <Typography>
-                      <span style={{ fontWeight: "500" }}>
-                        Checked Bags Included:{" "}
-                      </span>
-                      {segment.includedCheckedBagsQuantity}
-                    </Typography>
+                      <Typography>
+                        <span style={{ fontWeight: "500" }}>Duration:</span>{" "}
+                        {flight.formattedDuration}
+                        {index < flight.segments.length - 1 && (
+                          <span
+                            style={{
+                              color: "gray",
+                              marginLeft: 15,
+                              fontSize: "15px",
+                            }}
+                          >
+                            Layover: {flight.layoverDurations[index]}
+                          </span>
+                        )}
+                      </Typography>
+                      <Typography>
+                        <span style={{ fontWeight: "500" }}>Airline Code:</span>{" "}
+                        {segment.carrierCode}
+                      </Typography>
+
+                      <Typography>
+                        <span style={{ fontWeight: "500" }}>
+                          Flight Number:
+                        </span>{" "}
+                        {segment.flightNumber}
+                      </Typography>
+                      <Typography>
+                        <span style={{ fontWeight: "500" }}> Cabin Class:</span>{" "}
+                        {segment.cabin}
+                      </Typography>
+                      <Typography>
+                        <span style={{ fontWeight: "500" }}>
+                          Checked Bags Included:{" "}
+                        </span>
+                        {segment.includedCheckedBagsQuantity}
+                      </Typography>
+                    </Box>
                   </Box>
-                  <Box>
+
+                  <Box sx={{ mt: 3, ml: 3 }}>
                     {segment.amenities.length > 0 ? (
                       <div>
                         {"  "}
@@ -204,24 +221,33 @@ function DetailsPage() {
               border: "1px solid #ccc",
               backgroundColor: "white",
               width: "35%",
-              height: "240px",
+              height: "250px",
               display: "flex",
               flexDirection: "column",
             }}
           >
-            <Typography sx={{fontSize:"20px", fontWeight:"500"}}>Price Breakdown</Typography>
+            <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>
+              Price Breakdown
+            </Typography>
             <div
-              style={{ height: "2px", backgroundColor: "rgb(27, 88, 192)", width: "95%" }}
+              style={{
+                height: "1px",
+                backgroundColor: "rgba(228, 228, 228, 0.84)",
+                width: "95%",
+              }}
             ></div>
             <Box sx={{ mb: 3 }}>
               <Typography sx={{ mt: 2, fontSize: "16px" }}>
-                <span style={{fontWeight:"500"}}>Base Fare Total:</span> {flight.currency} ${totalBase.toFixed(2)}
+                <span style={{ fontWeight: "500" }}>Base Fare Total:</span>{" "}
+                {flight.currency} ${totalBase.toFixed(2)}
               </Typography>
               <Typography sx={{ mt: 2, fontSize: "16px" }}>
-                <span style={{fontWeight:"500"}}>Estimated Fees:</span> {flight.currency} ${totalFees.toFixed(2)}
+                <span style={{ fontWeight: "500" }}>Estimated Fees:</span>{" "}
+                {flight.currency} ${totalFees.toFixed(2)}
               </Typography>
               <Typography sx={{ mt: 2, fontSize: "16px" }}>
-                <span style={{fontWeight:"500"}}>Total Price:</span> {flight.currency} ${totalPrice.toFixed(2)}
+                <span style={{ fontWeight: "500" }}>Total Price:</span>{" "}
+                {flight.currency} ${totalPrice.toFixed(2)}
               </Typography>
             </Box>
             <Button
