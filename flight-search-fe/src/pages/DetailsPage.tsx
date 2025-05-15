@@ -4,14 +4,7 @@ import type { RootState } from "../redux/store";
 import type { Flight, Segment } from "../types/Flight";
 import Airplane from "../assets/AirplaneBackground.jpg";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Paper,
-  Button,
-} from "@mui/material";
+import { Box, Typography, Card, Paper, Button } from "@mui/material";
 
 function formatTime(time: string) {
   return new Date(time).toLocaleTimeString([], {
