@@ -4,7 +4,14 @@ import type { RootState } from "../redux/store";
 import type { Flight, Segment } from "../types/Flight";
 import Airplane from "../assets/AirplaneBackground.jpg";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import { Box, Typography, Card, CardContent, Paper, Button } from "@mui/material";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Paper,
+  Button,
+} from "@mui/material";
 
 function formatTime(time: string) {
   return new Date(time).toLocaleTimeString([], {
@@ -84,18 +91,18 @@ function DetailsPage() {
             height: "100%",
           }}
         >
-          <Card sx={{ mb: 3, height:"90%" }}>
+          <Card sx={{ mb: 3, height: "90%" }}>
             <CardContent sx={{ display: "flex" }}>
-              <Box sx={{ width: "70%"}}>
+              <Box sx={{ width: "70%" }}>
                 {flight.segments.map((segment: Segment, index: number) => (
                   <Box
                     key={index}
                     sx={{
                       mb: 6,
                       ml: 3,
-                      border:"1px solid #ccc",
-                      height:"220px",
-                      padding:"12px",
+                      border: "1px solid #ccc",
+                      height: "220px",
+                      padding: "12px",
                     }}
                   >
                     <Typography variant="h6">
@@ -107,7 +114,6 @@ function DetailsPage() {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                     
                       }}
                     >
                       <Box>
@@ -158,21 +164,29 @@ function DetailsPage() {
                   </Box>
                 ))}
               </Box>
-              <Box sx={{width:"35%", pl:10, height:"500px", border:"1px solid gray"}}>
+              <Box
+                sx={{
+                  width: "35%",
+                  pl: 10,
+                  height: "500px",
+                  border: "1px solid gray",
+                }}
+              >
                 <Typography variant="h6">Price Breakdown</Typography>
-                <div style={{height:"2px", backgroundColor:"black"}}></div>
-                <Typography sx={{ mt: 2, fontSize:"18px" }}>
+                <div style={{ height: "2px", backgroundColor: "black" }}></div>
+                <Typography sx={{ mt: 2, fontSize: "18px" }}>
                   Base Fare Total: {flight.currency} ${totalBase.toFixed(2)}
                 </Typography>
-                <Typography sx={{ mt: 2, fontSize:"18px" }}>
+                <Typography sx={{ mt: 2, fontSize: "18px" }}>
                   Estimated Fees: {flight.currency} ${totalFees.toFixed(2)}
                 </Typography>
-                <Typography sx={{ mt: 2, fontSize:"18px" }}>
+                <Typography sx={{ mt: 2, fontSize: "18px" }}>
                   Total Price: {flight.currency} ${totalPrice.toFixed(2)}
                 </Typography>
-                <Button variant="contained" sx={{mt:8}}>Book</Button>
+                <Button variant="contained" sx={{ mt: 8 }}>
+                  Book
+                </Button>
               </Box>
-              
             </CardContent>
           </Card>
         </div>
