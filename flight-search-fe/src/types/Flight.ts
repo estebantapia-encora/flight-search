@@ -11,6 +11,7 @@ export type Flight = {
     numberOfStops: number;
     stops: string;
     segments: Segment[];
+    layoverDurations: string[];
   };
   
   export type Segment = {
@@ -31,3 +32,5 @@ export type Flight = {
     amenityType: string;
     chargeable: boolean;
   };
+
+  

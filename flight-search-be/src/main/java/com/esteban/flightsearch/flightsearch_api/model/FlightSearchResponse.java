@@ -18,5 +18,6 @@ public class FlightSearchResponse {
     private int numberOfStops;
     private String stops;
     private List<SegmentSummary> segments;
+    private List<String> layoverDurations;
 }
 

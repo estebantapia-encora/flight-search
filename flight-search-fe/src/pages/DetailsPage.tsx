@@ -31,21 +31,18 @@ function DetailsPage() {
   const totalPrice = parseFloat(flight.price);
   const totalBase = parseFloat(flight.segments[0].basePrice); // ✅ Use only one segment
   const totalFees = totalPrice - totalBase;
-  
-  
 
   return (
     <Box sx={{ padding: "40px" }}>
-    <Typography variant="h6" sx={{ mt: 2 }}>
-  Total Price: {flight.currency} ${totalPrice.toFixed(2)}
-</Typography>
-<Typography variant="h6">
-  Base Fare Total: {flight.currency} ${totalBase.toFixed(2)}
-</Typography>
-<Typography variant="h6">
-  Estimated Fees: {flight.currency} ${totalFees.toFixed(2)}
-</Typography>
-
+      <Typography variant="h6" sx={{ mt: 2 }}>
+        Total Price: {flight.currency} ${totalPrice.toFixed(2)}
+      </Typography>
+      <Typography variant="h6">
+        Base Fare Total: {flight.currency} ${totalBase.toFixed(2)}
+      </Typography>
+      <Typography variant="h6">
+        Estimated Fees: {flight.currency} ${totalFees.toFixed(2)}
+      </Typography>
 
       {flight.segments.map((segment: Segment, index: number) => (
         <Box
@@ -61,15 +58,18 @@ function DetailsPage() {
           <Typography>
             Route: {segment.departureLoc} → {segment.arrivalLoc}
           </Typography>
+          {index < flight.segments.length - 1 && (
+      <Typography variant="body2" sx={{ ml: 2, color: "gray" }}>
+        Layover: {flight.layoverDurations[index]}
+      </Typography>
+    )}
           <Typography>Airline Code: {segment.carrierCode}</Typography>
           <Typography>Flight Number: {segment.flightNumber}</Typography>
           <Typography>Cabin Class: {segment.cabin}</Typography>
           <Typography>
             Base Price: {flight.currency} ${segment.basePrice}
           </Typography>
-          <Typography>
-            {segment.includedCheckedBagsQuantity} Checked
-          </Typography>
+          <Typography>{segment.includedCheckedBagsQuantity} Checked</Typography>
 
           <Typography sx={{ mt: 1, fontWeight: "600" }}>Amenities:</Typography>
           {segment.amenities.length > 0 ? (
