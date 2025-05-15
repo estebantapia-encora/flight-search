@@ -175,8 +175,22 @@ public class FlightSearchService {
                         }
 
                         segmentSummaries.add(summary);
-
                     }
+                    List<String> layoverDurations = new ArrayList<>();
+                    for (int j = 0; j < segments.size() - 1; j++) {
+                        JsonNode currentArrival = segments.get(j).get("arrival");
+                        JsonNode nextDeparture = segments.get(j + 1).get("departure");
+
+                        LocalDateTime arrivalTime = LocalDateTime.parse(currentArrival.get("at").asText());
+                        LocalDateTime departureTime = LocalDateTime.parse(nextDeparture.get("at").asText());
+
+                        Duration layover = Duration.between(arrivalTime, departureTime);
+                        long hours = layover.toHours();
+                        long minutes = layover.minusHours(hours).toMinutes();
+
+                        layoverDurations.add(String.format("%d hr %d min", hours, minutes));
+                    }
+
                     flight.setSegments(segmentSummaries);
                     String departure = segment.get("departure").get("iataCode").asText();
                     String arrival = segment.get("arrival").get("iataCode").asText();
@@ -222,6 +236,7 @@ public class FlightSearchService {
                     flight.setFormattedTimeRange(formattedTimeRange);
                     flight.setFormattedDuration(formattedDuration);
                     flight.setStops(stopsCombined);
+                    flight.setLayoverDurations(layoverDurations);
                     results.add(flight);
                 }
             }

@@ -81,12 +81,14 @@ export default function ResultsPage() {
           ) : (
             <div style={{ width: "65%" }}>
               {flights.map((flight, index) => (
-                <Card key={index} sx={{ mb: 4, width: "100%" }}>
+                <Card key={index} sx={{ mb: 4, width: "100%", }}>
                   <CardContent
                     sx={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
+                      position:"relative", 
+                      height:"150px",
                     }}
                   >
                     <Box
@@ -100,14 +102,7 @@ export default function ResultsPage() {
                         {flight.departure} - {flight.arrival}
                       </Typography>
                       <Typography>{flight.airline}</Typography>
-                      <Button
-                        variant="outlined"
-                        size="medium"
-                        sx={{ mt: 1 }}
-                        onClick={() => navigate(`/details/${flight.id}`)}
-                      >
-                        View Details
-                      </Button>
+                   
                     </Box>
                     <Box sx={{ display: "flex", flexDirection: "column", alignItems:"center" }}>
                       {" "}
@@ -141,6 +136,14 @@ export default function ResultsPage() {
                           Per Traveler
                         </Typography>
                       </Typography>
+                      <Button
+                        variant="outlined"
+                        size="medium"
+                        sx={{ mt: 1, position:"absolute", right:"20px" }}
+                        onClick={() => navigate(`/details/${flight.id}`)}
+                      >
+                        View Details
+                      </Button>
                     </Box>
                   </CardContent>
                 </Card>
