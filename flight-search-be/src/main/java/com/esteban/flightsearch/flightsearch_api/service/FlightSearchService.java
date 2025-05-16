@@ -78,14 +78,14 @@ public class FlightSearchService {
                 .block();
 
 
-        List<FlightSearchResponse> result = extractFlightOffers(responseJson);
+        List<FlightSearchResponse> result = extractFlightOffers(responseJson, request.getAdults());
 
         // ✅ Cache the result
         cache.put(cacheKey, new CachedResult(result, System.currentTimeMillis()));
         return result;
     }
 
-    private List<FlightSearchResponse> extractFlightOffers(String json) {
+    private List<FlightSearchResponse> extractFlightOffers(String json, int adults) {
         List<FlightSearchResponse> results = new ArrayList<>();
         try {
             JsonNode root = objectMapper.readTree(json);
@@ -198,6 +198,9 @@ public class FlightSearchService {
 
                     JsonNode priceNode = offer.get("price");
                     String price = priceNode.get("total").asText();
+                    double priceValue = Double.parseDouble(price);
+                    String totalPrice = String.format("%.2f", priceValue * adults);
+
                     String currency = priceNode.has("currency") ? priceNode.get("currency").asText() : null;
 
                     // ✅ new fields
@@ -230,6 +233,7 @@ public class FlightSearchService {
                     flight.setArrival(arrival);
                     flight.setAirline(carrier);
                     flight.setPrice(price);
+                    flight.setTotalPrice(totalPrice);
                     flight.setCurrency(currency);
                     flight.setNumberOfStops(numberOfStops);
                     flight.setFormattedDate(formattedDate);
