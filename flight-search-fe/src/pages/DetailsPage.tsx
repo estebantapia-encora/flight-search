@@ -31,7 +31,7 @@ function DetailsPage() {
   if (!flight) return <div>Flight not found.</div>;
 
   const totalPrice = parseFloat(flight.price);
-  const totalBase = parseFloat(flight.segments[0].basePrice); // ✅ Use only one segment
+  const totalBase = parseFloat(flight.segments[0].basePrice);
   const totalFees = totalPrice - totalBase;
 
   return (
@@ -204,7 +204,6 @@ function DetailsPage() {
               </Card>
             ))}
           </Box>
-
           <Card
             sx={{
               pt: 2,

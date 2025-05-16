@@ -2,7 +2,11 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { setSearchResults } from "../redux/searchResultsSlice";
+import {
+  setSearchResults,
+  setOriginAirport,
+  setDestinationAirport,
+} from "../redux/searchResultsSlice";
 import { Box } from "@mui/material";
 import DepartureSelect from "./DepartureSelect";
 import ArrivalSelect from "./ArrivalSelect";
@@ -26,7 +30,20 @@ export default function SearchModule() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
-
+  const handleOriginSelect = (airport: {
+    cityName: string;
+    iataCode: string;
+  }) => {
+    setOriginLocationCode(airport.iataCode);
+    dispatch(setOriginAirport(airport));
+  };
+  const handleDestinationSelect = (airport: {
+    cityName: string;
+    iataCode: string;
+  }) => {
+    setDestinationLocationCode(airport.iataCode);
+    dispatch(setDestinationAirport(airport));
+  };
   const handleSearch = async () => {
     setLoading(true);
     const body = {
@@ -38,7 +55,6 @@ export default function SearchModule() {
       currencyCode,
       nonStop,
     };
-
     try {
       const response = await fetch("/api/flights/search", {
         method: "POST",
@@ -57,7 +73,6 @@ export default function SearchModule() {
       setLoading(false);
     }
   };
-
   useEffect(() => {
     console.log("Origin:", originLocationCode);
     console.log("Destination:", destinationLocationCode);
@@ -78,7 +93,6 @@ export default function SearchModule() {
     currencyCode,
     nonStop,
   ]);
-
   return (
     <>
       <Box
@@ -110,8 +124,8 @@ export default function SearchModule() {
             }}
           ></div>
         </div>
-        <DepartureSelect onChange={setOriginLocationCode} />
-        <ArrivalSelect onChange={setDestinationLocationCode} />
+        <DepartureSelect onChange={handleOriginSelect} />
+        <ArrivalSelect onChange={handleDestinationSelect} />
         <DepartureDate value={departureDate} onChange={setDepartureDate} />
         <ReturnDate value={returnDate} onChange={setReturnDate} />
         <AdultNumber value={adults} onChange={setAdults} />
