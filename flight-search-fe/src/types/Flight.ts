@@ -4,6 +4,7 @@ export type Flight = {
     arrival: string;
     airline: string;
     price: string;
+    adults: number;
     totalPrice: string; 
     formattedDate: string;
     formattedTimeRange: string;
