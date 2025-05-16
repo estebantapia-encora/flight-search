@@ -143,17 +143,15 @@ export default function ResultsPage() {
                         }}
                       >
                         <Button
-                          variant={
-                            sortBy === "duration" ? "contained" : "outlined"
-                          }
+                          sx={{ fontSize: "15px" }}
+                          variant={sortBy === "duration" ? "outlined" : "text"}
                           onClick={() => setSortBy("duration")}
                         >
                           Sort by Duration
                         </Button>
                         <Button
-                          variant={
-                            sortBy === "price" ? "contained" : "outlined"
-                          }
+                          sx={{ fontSize: "15px" }}
+                          variant={sortBy === "price" ? "outlined" : "text"}
                           onClick={() => setSortBy("price")}
                         >
                           Sort by Price
@@ -229,7 +227,7 @@ export default function ResultsPage() {
                       </Typography>
 
                       <Button
-                        variant="outlined"
+                        variant="text"
                         size="medium"
                         sx={{ mt: 1, position: "absolute", right: "20px" }}
                         onClick={() => navigate(`/details/${flight.id}`)}
