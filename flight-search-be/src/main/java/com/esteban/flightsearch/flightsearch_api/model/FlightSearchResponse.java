@@ -11,6 +11,7 @@ public class FlightSearchResponse {
     private String arrival;
     private String airline;
     private String price;
+    private String totalPrice;
     private String formattedDate;
     private String formattedTimeRange;
     private String formattedDuration;
