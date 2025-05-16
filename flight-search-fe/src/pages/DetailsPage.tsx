@@ -4,7 +4,7 @@ import type { RootState } from "../redux/store";
 import type { Flight, Segment } from "../types/Flight";
 import Airplane from "../assets/AirplaneBackground.jpg";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import { Box, Typography, Card, Paper, Button} from "@mui/material";
+import { Box, Typography, Card, Paper, Button } from "@mui/material";
 import ReturnToResultsButton from "../components/ReturnToResultsButton";
 
 function formatTime(time: string) {
@@ -34,7 +34,7 @@ function DetailsPage() {
   const totalPrice = parseFloat(flight.price);
   const totalBase = parseFloat(flight.segments[0].basePrice);
   const totalFees = totalPrice - totalBase;
-
+  const finalPrice = flight.adults * totalPrice;
   return (
     <Box
       sx={{
@@ -203,7 +203,7 @@ function DetailsPage() {
                 </Box>
               </Card>
             ))}
-             <ReturnToResultsButton />
+            <ReturnToResultsButton />
           </Box>
           <Card
             sx={{
@@ -214,39 +214,76 @@ function DetailsPage() {
               border: "1px solid #ccc",
               backgroundColor: "white",
               width: "35%",
-              height: "300px",
+              height: "330px",
               display: "flex",
               flexDirection: "column",
             }}
           >
             <Typography sx={{ fontSize: "20px", fontWeight: "500" }}>
-              Price Breakdown
+              Price Breakdown ({flight.currency})
             </Typography>
             <div
               style={{
-                height: "1px",
-                backgroundColor: "rgba(228, 228, 228, 0.84)",
-                width: "100%",
+                color: "rgba(58, 54, 54, 0.84)",
               }}
-            ></div>
-            <Box sx={{ mb: 3 }}>
-              <Typography sx={{ mt: 2, fontSize: "16px" }}>
-                <span style={{ fontWeight: "500" }}>Base Fare Total:</span>{" "}
-                {flight.currency} ${totalBase.toFixed(2)}
-              </Typography>
-              <Typography sx={{ mt: 2, fontSize: "16px" }}>
-                <span style={{ fontWeight: "500" }}>Estimated Fees:</span>{" "}
-                {flight.currency} ${totalFees.toFixed(2)}
-              </Typography>
-              <Typography sx={{ mt: 2, fontSize: "16px" }}>
-                <span style={{ fontWeight: "500" }}>
-                  Total Price Per Person:
-                </span>{" "}
-                {flight.currency} ${totalPrice.toFixed(2)}
-                <Typography sx={{ color: "red" }}>
-                  FIX THE ABOVE, DISPLAY FINAL TOTAL, MULTIPLY TOTAL PRICE **
-                  ADULT NUMBER
+            >
+              - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+              - - -{" "}
+            </div>
+            <Box sx={{ mb: 2, width: "92%" }}>
+              <Box>
+                <Typography
+                  sx={{
+                    mt: 1,
+                    fontSize: "16px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span style={{ fontWeight: "500" }}>
+                    Base Fare Per Traveler:
+                  </span>{" "}
+                  ${totalBase.toFixed(2)}
                 </Typography>
+                <Typography
+                  sx={{
+                    mt: 1,
+                    fontSize: "16px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span style={{ fontWeight: "500" }}>Estimated Fees:</span> $
+                  {totalFees.toFixed(2)}
+                </Typography>
+                <Typography
+                  sx={{
+                    mt: 1,
+                    fontSize: "16px",
+                    display: "flex",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <span style={{ fontWeight: "500" }}>Total Per Traveler:</span>{" "}
+                  ${totalPrice.toFixed(2)}
+                </Typography>
+              </Box>
+              <Typography sx={{ mt: 2 }}>
+                {flight.adults} Adults
+                <div
+                  style={{
+                    color: "rgba(58, 54, 54, 0.84)",
+                  }}
+                >
+                  - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - -
+                </div>
+              </Typography>
+              <Typography
+                sx={{ display: "flex", justifyContent: "space-between" }}
+              >
+                {" "}
+                <span style={{ fontWeight: "500" }}>Total Price:</span> $
+                {finalPrice}
               </Typography>
             </Box>
             <Button
