@@ -16,6 +16,12 @@ import "../App.css";
 
 export default function ResultsPage() {
   const allFlights = useSelector((s: RootState) => s.searchResults.results);
+  const originAirport = useSelector(
+    (s: RootState) => s.searchResults.originAirport
+  );
+  const destinationAirport = useSelector(
+    (s: RootState) => s.searchResults.destinationAirport
+  );
   const flights = allFlights.slice(0, 6);
   const navigate = useNavigate();
 
@@ -30,7 +36,7 @@ export default function ResultsPage() {
           alignItems: "center",
           backgroundImage: `url(${Airplane})`,
           backgroundSize: "100%",
-          backgroundColor: "rgba(210, 225, 255, 0.83)",
+          backgroundColor: "rgba(216, 222, 235, 0.94)",
           backgroundBlendMode: "soft-light",
           width: "100%",
         }}
@@ -41,7 +47,7 @@ export default function ResultsPage() {
               position: "relative",
               display: "flex",
               alignItems: "center",
-              borderBottom: "1px solid rgb(227, 227, 228)",
+              borderBottom: "1px solid rgb(237, 237, 239)",
               borderRadius: "5px",
               backgroundColor: "white",
             }}
@@ -72,7 +78,7 @@ export default function ResultsPage() {
           <Typography
             variant="h5"
             gutterBottom
-            sx={{ fontWeight: "500", width: "65%", fontSize: "22px" }}
+            sx={{ fontWeight: "500", width: "65%", fontSize: "24px" }}
           >
             Departing Flights
           </Typography>
@@ -80,15 +86,26 @@ export default function ResultsPage() {
             <p>No flights found.</p>
           ) : (
             <div style={{ width: "65%" }}>
+              {flights.length > 0 && (
+                <Typography
+                  variant="h1"
+                  gutterBottom
+                  sx={{ fontWeight: "400", fontSize: "20px" }}
+                >
+                  {originAirport?.cityName} ({originAirport?.iataCode}) →{" "}
+                  {destinationAirport?.cityName} ({destinationAirport?.iataCode}
+                  )
+                </Typography>
+              )}
               {flights.map((flight, index) => (
-                <Card key={index} sx={{ mb: 4, width: "100%", }}>
+                <Card key={index} sx={{ mb: 4, width: "100%" }}>
                   <CardContent
                     sx={{
                       display: "flex",
                       justifyContent: "space-between",
                       alignItems: "center",
-                      position:"relative", 
-                      height:"150px",
+                      position: "relative",
+                      height: "150px",
                     }}
                   >
                     <Box
@@ -98,17 +115,19 @@ export default function ResultsPage() {
                         alignItems: "center",
                       }}
                     >
-                      <Typography sx={{ fontWeight: "600", fontSize: "18px" }}>
-                        {flight.departure} - {flight.arrival}
-                      </Typography>
-                      <Typography>{flight.airline}</Typography>
-                   
-                    </Box>
-                    <Box sx={{ display: "flex", flexDirection: "column", alignItems:"center" }}>
                       {" "}
                       <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
                         {flight.formattedTimeRange}
                       </Typography>
+                      <Typography>{flight.airline}</Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
                       <Typography sx={{ fontWeight: "400", fontSize: "16px" }}>
                         {" "}
                         {flight.formattedDuration}
@@ -121,6 +140,7 @@ export default function ResultsPage() {
                           : `Stops: ${flight.numberOfStops} (${flight.stops})`}
                       </Typography>
                     </Box>
+
                     <Box>
                       <Typography sx={{ fontWeight: 600 }} component="div">
                         {flight.currency} ${flight.price}
@@ -139,10 +159,10 @@ export default function ResultsPage() {
                       <Button
                         variant="outlined"
                         size="medium"
-                        sx={{ mt: 1, position:"absolute", right:"20px" }}
+                        sx={{ mt: 1, position: "absolute", right: "20px" }}
                         onClick={() => navigate(`/details/${flight.id}`)}
                       >
-                        View Details
+                        View
                       </Button>
                     </Box>
                   </CardContent>
