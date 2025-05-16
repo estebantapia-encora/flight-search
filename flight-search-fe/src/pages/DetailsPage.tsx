@@ -35,6 +35,8 @@ function DetailsPage() {
   const totalBase = parseFloat(flight.segments[0].basePrice);
   const totalFees = totalPrice - totalBase;
   const finalPrice = flight.adults * totalPrice;
+  const currencySymbol = flight.currency === "EUR" ? "€" : "$";
+
   return (
     <Box
       sx={{
@@ -243,12 +245,13 @@ function DetailsPage() {
                   <span style={{ fontWeight: "500" }}>
                     Base Fare Per Traveler:
                   </span>{" "}
-                  $
+                  {currencySymbol}
                   {Number(totalBase).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
                 </Typography>
+
                 <Typography
                   sx={{
                     mt: 1,
@@ -257,12 +260,14 @@ function DetailsPage() {
                     justifyContent: "space-between",
                   }}
                 >
-                  <span style={{ fontWeight: "500" }}>Estimated Fees:</span> $
+                  <span style={{ fontWeight: "500" }}>Estimated Fees:</span>{" "}
+                  {currencySymbol}
                   {Number(totalFees).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
                   })}
                 </Typography>
+
                 <Typography
                   sx={{
                     mt: 1,
@@ -272,7 +277,7 @@ function DetailsPage() {
                   }}
                 >
                   <span style={{ fontWeight: "500" }}>Total Per Traveler:</span>{" "}
-                  $
+                  {currencySymbol}
                   {Number(totalPrice).toLocaleString(undefined, {
                     minimumFractionDigits: 2,
                     maximumFractionDigits: 2,
@@ -280,7 +285,8 @@ function DetailsPage() {
                 </Typography>
               </Box>
               <Typography sx={{ mt: 2 }}>
-                {flight.adults} Adults
+                {flight.adults} {""}
+                {flight.adults > 1 ? `Adults` : `Adult`}
                 <div
                   style={{
                     color: "rgba(58, 54, 54, 0.84)",
@@ -294,7 +300,8 @@ function DetailsPage() {
                 sx={{ display: "flex", justifyContent: "space-between" }}
               >
                 {" "}
-                <span style={{ fontWeight: "500" }}>Total Price:</span>$
+                <span style={{ fontWeight: "500" }}>Total Price:</span>
+                {currencySymbol}
                 {Number(finalPrice).toLocaleString(undefined, {
                   minimumFractionDigits: 2,
                   maximumFractionDigits: 2,

@@ -143,19 +143,25 @@ export default function ResultsPage() {
 
                     <Box>
                       <Typography sx={{ fontWeight: 600 }} component="div">
-                        {flight.currency} ${flight.totalPrice}
+                        {flight.currency === "EUR"
+                          ? `€${flight.totalPrice}`
+                          : `$${flight.totalPrice}`}
                         <Typography sx={{ display: "inline" }} component="span">
                           {" "}
                           Total Price
                         </Typography>
                       </Typography>
+
                       <Typography sx={{ fontWeight: 600 }} component="div">
-                        {flight.currency} ${flight.price}
+                        {flight.currency === "EUR"
+                          ? `€${flight.price}`
+                          : `$${flight.price}`}
                         <Typography sx={{ display: "inline" }} component="span">
                           {" "}
                           Per Traveler
                         </Typography>
                       </Typography>
+
                       <Button
                         variant="outlined"
                         size="medium"
