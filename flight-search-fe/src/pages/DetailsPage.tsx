@@ -5,6 +5,7 @@ import type { Flight, Segment } from "../types/Flight";
 import Airplane from "../assets/AirplaneBackground.jpg";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { Box, Typography, Card, Paper, Button} from "@mui/material";
+import ReturnToResultsButton from "../components/ReturnToResultsButton";
 
 function formatTime(time: string) {
   return new Date(time).toLocaleTimeString([], {
@@ -202,6 +203,7 @@ function DetailsPage() {
                 </Box>
               </Card>
             ))}
+             <ReturnToResultsButton />
           </Box>
           <Card
             sx={{
