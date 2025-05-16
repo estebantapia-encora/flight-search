@@ -4,7 +4,8 @@ import type { RootState } from "../redux/store";
 import type { Flight, Segment } from "../types/Flight";
 import Airplane from "../assets/AirplaneBackground.jpg";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
-import { Box, Typography, Card, Paper, Button } from "@mui/material";
+import { Box, Typography, Card, Paper, Button, colors } from "@mui/material";
+import { red } from "@mui/material/colors";
 
 function formatTime(time: string) {
   return new Date(time).toLocaleTimeString([], {
@@ -79,12 +80,11 @@ function DetailsPage() {
             <h3 style={{ fontWeight: "500" }}>Flight Search</h3>
           </Box>
         </div>
-        <Box sx={{ display: "flex", width: "85%", justifyContent: "center" }}>
+        <Box sx={{ display: "flex", width: "90%", justifyContent: "center" }}>
           <Box
             sx={{
               width: "100%",
               height: "100%",
-              mr: 4,
             }}
           >
             {flight.segments.map((segment: Segment, index: number) => (
@@ -97,7 +97,7 @@ function DetailsPage() {
                   border: "1px solid #ccc",
                   backgroundColor: "white",
                   width: "85%",
-                  height: "250px",
+                  height: "270px",
                   display: "flex",
                   flexDirection: "column",
                   justifyContent: "center",
@@ -213,7 +213,7 @@ function DetailsPage() {
               border: "1px solid #ccc",
               backgroundColor: "white",
               width: "35%",
-              height: "250px",
+              height: "300px",
               display: "flex",
               flexDirection: "column",
             }}
@@ -225,7 +225,7 @@ function DetailsPage() {
               style={{
                 height: "1px",
                 backgroundColor: "rgba(228, 228, 228, 0.84)",
-                width: "95%",
+                width: "100%",
               }}
             ></div>
             <Box sx={{ mb: 3 }}>
@@ -238,8 +238,14 @@ function DetailsPage() {
                 {flight.currency} ${totalFees.toFixed(2)}
               </Typography>
               <Typography sx={{ mt: 2, fontSize: "16px" }}>
-                <span style={{ fontWeight: "500" }}>Total Price:</span>{" "}
+                <span style={{ fontWeight: "500" }}>
+                  Total Price Per Person:
+                </span>{" "}
                 {flight.currency} ${totalPrice.toFixed(2)}
+                <Typography sx={{ color: "red" }}>
+                  FIX THE ABOVE, DISPLAY FINAL TOTAL, MULTIPLY TOTAL PRICE **
+                  ADULT NUMBER
+                </Typography>
               </Typography>
             </Box>
             <Button
