@@ -1,5 +1,6 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
+import { useState, useMemo } from "react";
 import {
   Box,
   Card,
@@ -16,13 +17,39 @@ import "../App.css";
 
 export default function ResultsPage() {
   const allFlights = useSelector((s: RootState) => s.searchResults.results);
+  const [sortBy, setSortBy] = useState<"price" | "duration" | null>(null);
+
   const originAirport = useSelector(
     (s: RootState) => s.searchResults.originAirport
   );
   const destinationAirport = useSelector(
     (s: RootState) => s.searchResults.destinationAirport
   );
-  const flights = allFlights.slice(0, 6);
+
+  const flights = useMemo(() => {
+    const sliced = allFlights.slice(0, 6);
+
+    if (sortBy === "price") {
+      return [...sliced].sort(
+        (a, b) => parseFloat(a.totalPrice) - parseFloat(b.totalPrice)
+      );
+    }
+
+    if (sortBy === "duration") {
+      const toMinutes = (duration: string) => {
+        const [h, m] = duration.split(" ").filter(Boolean);
+        return (parseInt(h) || 0) * 60 + (parseInt(m) || 0);
+      };
+
+      return [...sliced].sort(
+        (a, b) =>
+          toMinutes(a.formattedDuration) - toMinutes(b.formattedDuration)
+      );
+    }
+
+    return sliced;
+  }, [allFlights, sortBy]);
+
   const navigate = useNavigate();
 
   return (
@@ -36,7 +63,7 @@ export default function ResultsPage() {
           alignItems: "center",
           backgroundImage: `url(${Airplane})`,
           backgroundSize: "100%",
-          backgroundColor: "rgba(216, 222, 235, 0.94)",
+          backgroundColor: "rgba(220, 230, 252, 0.96)",
           backgroundBlendMode: "soft-light",
           width: "100%",
         }}
@@ -82,20 +109,59 @@ export default function ResultsPage() {
           >
             Departing Flights
           </Typography>
+
           {flights.length === 0 ? (
             <p>No flights found.</p>
           ) : (
             <div style={{ width: "65%" }}>
               {flights.length > 0 && (
-                <Typography
-                  variant="h1"
-                  gutterBottom
-                  sx={{ fontWeight: "400", fontSize: "20px" }}
-                >
-                  {originAirport?.cityName} ({originAirport?.iataCode}) →{" "}
-                  {destinationAirport?.cityName} ({destinationAirport?.iataCode}
-                  )
-                </Typography>
+                <>
+                  <Typography
+                    variant="h1"
+                    gutterBottom
+                    sx={{ fontWeight: "400", fontSize: "20px", width: "100%" }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        width: "100%",
+                        justifyContent: "space-between",
+                      }}
+                    >
+                      <Box>
+                        {originAirport?.cityName} ({originAirport?.iataCode}) →{" "}
+                        {destinationAirport?.cityName} (
+                        {destinationAirport?.iataCode})
+                      </Box>
+                      <Box
+                        sx={{
+                          width: "65%",
+                          mb: 2,
+                          display: "flex",
+                          gap: 2,
+                          justifyContent: "flex-end",
+                        }}
+                      >
+                        <Button
+                          variant={
+                            sortBy === "duration" ? "contained" : "outlined"
+                          }
+                          onClick={() => setSortBy("duration")}
+                        >
+                          Sort by Duration
+                        </Button>
+                        <Button
+                          variant={
+                            sortBy === "price" ? "contained" : "outlined"
+                          }
+                          onClick={() => setSortBy("price")}
+                        >
+                          Sort by Price
+                        </Button>
+                      </Box>
+                    </Box>
+                  </Typography>
+                </>
               )}
               {flights.map((flight, index) => (
                 <Card key={index} sx={{ mb: 4, width: "100%" }}>
@@ -121,6 +187,13 @@ export default function ResultsPage() {
                       </Typography>
                       <Typography>{flight.airline}</Typography>
                     </Box>
+                    <Box>
+                      <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                        {flight.numberOfStops === 0
+                          ? "Non-stop"
+                          : `Stops: ${flight.numberOfStops} (${flight.stops})`}
+                      </Typography>
+                    </Box>
                     <Box
                       sx={{
                         display: "flex",
@@ -131,13 +204,6 @@ export default function ResultsPage() {
                       <Typography sx={{ fontWeight: "400", fontSize: "16px" }}>
                         {" "}
                         {flight.formattedDuration}
-                      </Typography>
-                    </Box>
-                    <Box>
-                      <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                        {flight.numberOfStops === 0
-                          ? "Non-stop"
-                          : `Stops: ${flight.numberOfStops} (${flight.stops})`}
                       </Typography>
                     </Box>
 
