@@ -234,6 +234,7 @@ public class FlightSearchService {
                     flight.setAirline(carrier);
                     flight.setPrice(price);
                     flight.setTotalPrice(totalPrice);
+                    flight.setAdults(adults);
                     flight.setCurrency(currency);
                     flight.setNumberOfStops(numberOfStops);
                     flight.setFormattedDate(formattedDate);

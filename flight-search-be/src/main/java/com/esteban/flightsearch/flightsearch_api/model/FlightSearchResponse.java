@@ -10,6 +10,7 @@ public class FlightSearchResponse {
     private String departure;
     private String arrival;
     private String airline;
+    private int adults;
     private String price;
     private String totalPrice;
     private String formattedDate;
