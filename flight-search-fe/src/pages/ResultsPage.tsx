@@ -143,10 +143,10 @@ export default function ResultsPage() {
 
                     <Box>
                       <Typography sx={{ fontWeight: 600 }} component="div">
-                        {flight.currency} ${flight.price}
+                        {flight.currency} ${flight.totalPrice}
                         <Typography sx={{ display: "inline" }} component="span">
                           {" "}
-                          Total
+                          Total Price
                         </Typography>
                       </Typography>
                       <Typography sx={{ fontWeight: 600 }} component="div">
@@ -162,7 +162,7 @@ export default function ResultsPage() {
                         sx={{ mt: 1, position: "absolute", right: "20px" }}
                         onClick={() => navigate(`/details/${flight.id}`)}
                       >
-                        View
+                        View Details
                       </Button>
                     </Box>
                   </CardContent>
