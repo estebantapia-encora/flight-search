@@ -243,7 +243,11 @@ function DetailsPage() {
                   <span style={{ fontWeight: "500" }}>
                     Base Fare Per Traveler:
                   </span>{" "}
-                  ${totalBase.toFixed(2)}
+                  $
+                  {Number(totalBase).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Typography>
                 <Typography
                   sx={{
@@ -254,7 +258,10 @@ function DetailsPage() {
                   }}
                 >
                   <span style={{ fontWeight: "500" }}>Estimated Fees:</span> $
-                  {totalFees.toFixed(2)}
+                  {Number(totalFees).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Typography>
                 <Typography
                   sx={{
@@ -265,7 +272,11 @@ function DetailsPage() {
                   }}
                 >
                   <span style={{ fontWeight: "500" }}>Total Per Traveler:</span>{" "}
-                  ${totalPrice.toFixed(2)}
+                  $
+                  {Number(totalPrice).toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}
                 </Typography>
               </Box>
               <Typography sx={{ mt: 2 }}>
@@ -275,15 +286,19 @@ function DetailsPage() {
                     color: "rgba(58, 54, 54, 0.84)",
                   }}
                 >
-                  - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - - -
+                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                  - - - -
                 </div>
               </Typography>
               <Typography
                 sx={{ display: "flex", justifyContent: "space-between" }}
               >
                 {" "}
-                <span style={{ fontWeight: "500" }}>Total Price:</span> $
-                {finalPrice}
+                <span style={{ fontWeight: "500" }}>Total Price:</span>$
+                {Number(finalPrice).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </Typography>
             </Box>
             <Button
