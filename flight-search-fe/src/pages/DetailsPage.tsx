@@ -153,8 +153,8 @@ function DetailsPage() {
                         )}
                       </Typography>
                       <Typography>
-                        <span style={{ fontWeight: "500" }}>Airline Code:</span>{" "}
-                        {segment.carrierCode}
+                        <span style={{ fontWeight: "500" }}>Airline:</span>{" "}
+                        {flight.airline} ({segment.carrierCode})
                       </Typography>
 
                       <Typography>
