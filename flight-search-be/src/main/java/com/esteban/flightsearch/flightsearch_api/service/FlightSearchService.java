@@ -28,12 +28,14 @@ public class FlightSearchService {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final ConcurrentHashMap<String, CachedResult> cache = new ConcurrentHashMap<>();
     private final long cacheTTL = 30 * 60 * 1000; // 30 minutes in milliseconds
+    private final AirlineLookupService airlineLookupService;
 
     private final TokenService tokenService;
 
-    public FlightSearchService(AmadeusApiConfig config, TokenService tokenService) {
+    public FlightSearchService(AmadeusApiConfig config, TokenService tokenService, AirlineLookupService airlineLookupService) {
         this.webClient = config.getWebClient();
         this.tokenService = tokenService;
+        this.airlineLookupService = airlineLookupService;
     }
 
 
@@ -231,7 +233,7 @@ public class FlightSearchService {
                     // ✅ set all fields
                     flight.setDeparture(departure);
                     flight.setArrival(arrival);
-                    flight.setAirline(carrier);
+                    flight.setAirline(airlineLookupService.getAirlineName(carrier));  // ✅ This sets the full name (e.g., "United Airlines")
                     flight.setPrice(price);
                     flight.setTotalPrice(totalPrice);
                     flight.setAdults(adults);
