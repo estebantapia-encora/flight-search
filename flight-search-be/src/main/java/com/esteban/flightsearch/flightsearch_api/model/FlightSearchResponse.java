@@ -22,4 +22,3 @@ public class FlightSearchResponse {
     private List<SegmentSummary> segments;
     private List<String> layoverDurations;
 }
-
