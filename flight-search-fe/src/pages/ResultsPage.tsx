@@ -27,7 +27,7 @@ export default function ResultsPage() {
   );
 
   const flights = useMemo(() => {
-    const sliced = allFlights.slice(0, 6);
+    const sliced = allFlights.slice(0, 5);
 
     if (sortBy === "price") {
       return [...sliced].sort(
