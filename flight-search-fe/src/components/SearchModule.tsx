@@ -30,6 +30,12 @@ export default function SearchModule() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [loading, setLoading] = useState(false);
+  const isSearchDisabled =
+    !originLocationCode ||
+    !departureDate ||
+    !currencyCode ||
+    !destinationLocationCode;
+
   const handleOriginSelect = (airport: {
     cityName: string;
     iataCode: string;
@@ -131,7 +137,11 @@ export default function SearchModule() {
         <AdultNumber value={adults} onChange={setAdults} />
         <Currency value={currencyCode} onChange={setCurrencyCode} />
         <NonStop value={nonStop} onChange={setNonStop} />
-        <SearchButton onClick={handleSearch} loading={loading} />
+        <SearchButton
+          onClick={handleSearch}
+          loading={loading}
+          disabled={isSearchDisabled}
+        />
       </Box>
     </>
   );
