@@ -28,6 +28,8 @@ function DetailsPage() {
     (state: RootState) => state.searchResults.results
   );
   const flight = flights.find((f) => f.id === id) as Flight | undefined;
+  console.log("🔍 DetailsPage loaded with flight ID:", id);
+  console.log("📦 Flight found:", flight);
 
   if (!flight) return <div>Flight not found.</div>;
 
@@ -89,6 +91,10 @@ function DetailsPage() {
               height: "100%",
             }}
           >
+            <Typography sx={{ fontSize: "18px", fontWeight: "600", mb: 2 }}>
+              Total Duration: {flight.formattedDuration}
+            </Typography>
+
             {flight.segments.map((segment: Segment, index: number) => (
               <Card
                 key={index}
@@ -115,7 +121,18 @@ function DetailsPage() {
                       }}
                     >
                       Segment {index + 1} - {segment.departureLoc} →{" "}
-                      {segment.arrivalLoc}
+                      {segment.arrivalLoc}{" "}
+                      {index > 0 && (
+                        <span
+                          style={{
+                            color: "gray",
+                            marginLeft: 15,
+                            fontSize: "15px",
+                          }}
+                        >
+                          Layover: {flight.layoverDurations[index - 1]}
+                        </span>
+                      )}
                     </Typography>
                     <Box
                       sx={{
@@ -137,21 +154,7 @@ function DetailsPage() {
                         </span>
                         {formatTime(segment.arrivalTime)}
                       </Typography>
-                      <Typography>
-                        <span style={{ fontWeight: "500" }}>Duration:</span>{" "}
-                        {flight.formattedDuration}
-                        {index < flight.segments.length - 1 && (
-                          <span
-                            style={{
-                              color: "gray",
-                              marginLeft: 15,
-                              fontSize: "15px",
-                            }}
-                          >
-                            Layover: {flight.layoverDurations[index]}
-                          </span>
-                        )}
-                      </Typography>
+
                       <Typography>
                         <span style={{ fontWeight: "500" }}>Airline:</span>{" "}
                         {flight.airline} ({segment.carrierCode})
@@ -213,6 +216,7 @@ function DetailsPage() {
               pb: 2,
               pl: 2,
               mb: 3,
+              mt: 5,
               border: "1px solid #ccc",
               backgroundColor: "white",
               width: "35%",
