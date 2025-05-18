@@ -38,6 +38,18 @@ function DetailsPage() {
   const totalFees = totalPrice - totalBase;
   const finalPrice = flight.adults * totalPrice;
   const currencySymbol = flight.currency === "EUR" ? "€" : "$";
+  const originAirport = useSelector(
+    (state: RootState) => state.searchResults.originAirport
+  );
+  const destinationAirport = useSelector(
+    (state: RootState) => state.searchResults.destinationAirport
+  );
+  const getCityName = (iata: string): string => {
+    if (iata === originAirport?.iataCode) return originAirport.cityName;
+    if (iata === destinationAirport?.iataCode)
+      return destinationAirport.cityName;
+    return iata; // fallback if not found
+  };
 
   return (
     <Box
@@ -111,29 +123,34 @@ function DetailsPage() {
                   justifyContent: "center",
                 }}
               >
+                <Box sx={{ width: "100%" }}>
+                  <Typography
+                    style={{
+                      fontSize: "19px",
+                      fontWeight: "600",
+                      width: "100%",
+                      paddingLeft: "24px",
+                      marginBottom:"5px",
+                    }}
+                  >
+                    Segment {index + 1} - {getCityName(segment.departureLoc)} →{" "}
+                    {getCityName(segment.arrivalLoc)}
+                    {index > 0 && (
+                      <span
+                        style={{
+                          color: "gray",
+                          marginLeft: 15,
+                          fontSize: "15px",
+                          fontWeight: "500",
+                        }}
+                      >
+                        Layover: {flight.layoverDurations[index - 1]}
+                      </span>
+                    )}
+                  </Typography>
+                </Box>
                 <Box sx={{ display: "flex", pl: 3, pr: 3, height: "100%" }}>
                   <Box sx={{ height: "100%" }}>
-                    <Typography
-                      style={{
-                        fontSize: "19px",
-                        fontWeight: "600",
-                        height: "13%",
-                      }}
-                    >
-                      Segment {index + 1} - {segment.departureLoc} →{" "}
-                      {segment.arrivalLoc}{" "}
-                      {index > 0 && (
-                        <span
-                          style={{
-                            color: "gray",
-                            marginLeft: 15,
-                            fontSize: "15px",
-                          }}
-                        >
-                          Layover: {flight.layoverDurations[index - 1]}
-                        </span>
-                      )}
-                    </Typography>
                     <Box
                       sx={{
                         display: "flex",
@@ -179,7 +196,7 @@ function DetailsPage() {
                     </Box>
                   </Box>
 
-                  <Box sx={{ mt: 3, ml: 3 }}>
+                  <Box sx={{ mt: 1, ml: 5 }}>
                     {segment.amenities.length > 0 ? (
                       <div>
                         {"  "}
