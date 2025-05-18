@@ -19,7 +19,7 @@ export default function Currency({ value, onChange }: CurrencyProps) {
     <>
       <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
         <Typography sx={{ width: "25%", fontWeight: "300" }}>
-          Currency
+          Currency *
         </Typography>
         <FormControl sx={{ m: 1, minWidth: 110 }} size="small">
           <InputLabel id="currency-label">Currency</InputLabel>
