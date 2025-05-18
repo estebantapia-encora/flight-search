@@ -50,40 +50,50 @@ public class FlightSearchService {
         }
 
         System.out.println("🚀 Calling Amadeus API for: " + cacheKey);
-        // 1. Get access token
+
+// Get access token once
         String accessToken = tokenService.getToken();
 
+        List<FlightSearchResponse> result = new ArrayList<>();
 
-        // 2. Search for flights
-        String responseJson = webClient.get()
-                .uri(uriBuilder -> {
-                    var builder = uriBuilder
-                            .path("/v2/shopping/flight-offers")
-                            .queryParam("originLocationCode", request.getOriginLocationCode())
-                            .queryParam("destinationLocationCode", request.getDestinationLocationCode())
-                            .queryParam("departureDate", request.getDepartureDate())
-                            .queryParam("adults", request.getAdults())
-                            .queryParam("currencyCode", request.getCurrencyCode())
-                            .queryParam("nonStop", request.isNonStop())
-                            .queryParam("max", 10);
+// 🔹 FIRST: DEPARTURE FLIGHT
+// 🔹 First: DEPARTURE
+        String departureJson = callAmadeus(
+                request.getOriginLocationCode(),
+                request.getDestinationLocationCode(),
+                request.getDepartureDate(),
+                request.getAdults(),
+                request.getCurrencyCode(),
+                request.isNonStop(),
+                accessToken
+        );
 
-                    if (request.getReturnDate() != null && !request.getReturnDate().isBlank()) {
-                        builder.queryParam("returnDate", request.getReturnDate());
-                    }
+        List<FlightSearchResponse> departureResults = extractFlightOffers(departureJson, request.getAdults());
+        departureResults.forEach(f -> f.setReturnFlight(false));
+        result.addAll(departureResults);
 
-                    return builder.build();
-                })
-                .header("Authorization", "Bearer " + accessToken)
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+// 🔹 Second: RETURN (only if returnDate present)
+        if (request.getReturnDate() != null && !request.getReturnDate().isBlank()) {
+            String returnJson = callAmadeus(
+                    request.getDestinationLocationCode(),
+                    request.getOriginLocationCode(), // 🔁 swapped!
+                    request.getReturnDate(),
+                    request.getAdults(),
+                    request.getCurrencyCode(),
+                    request.isNonStop(),
+                    accessToken
+            );
+
+            List<FlightSearchResponse> returnResults = extractFlightOffers(returnJson, request.getAdults());
+            returnResults.forEach(f -> f.setReturnFlight(true));
+            result.addAll(returnResults);
+        }
 
 
-        List<FlightSearchResponse> result = extractFlightOffers(responseJson, request.getAdults());
-
-        // ✅ Cache the result
+// ✅ Cache the combined result
         cache.put(cacheKey, new CachedResult(result, System.currentTimeMillis()));
         return result;
+
     }
 
     private List<FlightSearchResponse> extractFlightOffers(String json, int adults) {
@@ -95,12 +105,8 @@ public class FlightSearchService {
                 for (JsonNode offer : data) {
                     FlightSearchResponse flight = new FlightSearchResponse();
                     // if Amadeus returns its own "id" field:
-                    if (offer.has("id")) {
-                        flight.setId(offer.get("id").asText());
-                    } else {
-                        // fallback to a generated UUID
-                        flight.setId(UUID.randomUUID().toString());
-                    }
+                    flight.setId(UUID.randomUUID().toString());
+
 
                     JsonNode itinerary = offer.get("itineraries").get(0);
                     JsonNode segment = itinerary.get("segments").get(0);
@@ -276,5 +282,23 @@ public class FlightSearchService {
             return System.currentTimeMillis() - timestamp > 10 * 60 * 1000;
         }
     }
-
+    private String callAmadeus(String origin, String destination, String date, int adults, String currencyCode, boolean nonStop, String accessToken)
+    {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/v2/shopping/flight-offers")
+                        .queryParam("originLocationCode", origin)
+                        .queryParam("destinationLocationCode", destination)
+                        .queryParam("departureDate", date)
+                        .queryParam("adults", adults)
+                        .queryParam("currencyCode", currencyCode)
+                        .queryParam("nonStop", nonStop)
+                        .queryParam("max", 10)
+                        .build()
+                )
+                .header("Authorization", "Bearer " + accessToken)
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 }
