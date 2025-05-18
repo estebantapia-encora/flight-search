@@ -14,7 +14,7 @@ export default function DepartureDate({ value, onChange }: DepartureDateProps) {
   return (
     <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
       <Typography style={{ width: "25%", margin: 0, fontWeight: "300" }}>
-        Departure Date
+        Departure Date *
       </Typography>
       <FormControl sx={{ m: 1 }}>
         <LocalizationProvider dateAdapter={AdapterDayjs}>

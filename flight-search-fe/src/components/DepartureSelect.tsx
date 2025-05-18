@@ -27,7 +27,7 @@ export default function DepartureSelect({ onChange }: DepartureSelectProps) {
   return (
     <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
       <Typography sx={{ width: "25%", fontWeight: "300" }}>
-        Departure Airport
+        Departure Airport *
       </Typography>
       <Autocomplete
         sx={{ m: 1, width: 250 }}
