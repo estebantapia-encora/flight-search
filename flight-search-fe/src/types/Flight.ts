@@ -14,6 +14,7 @@ export type Flight = {
     stops: string;
     segments: Segment[];
     layoverDurations: string[];
+    returnFlight?: boolean;
   };
   
   export type Segment = {

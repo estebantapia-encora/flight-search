@@ -26,29 +26,36 @@ export default function ResultsPage() {
     (s: RootState) => s.searchResults.destinationAirport
   );
 
-  const flights = useMemo(() => {
-    const sliced = allFlights.slice(0, 5);
-
-    if (sortBy === "price") {
-      return [...sliced].sort(
-        (a, b) => parseFloat(a.totalPrice) - parseFloat(b.totalPrice)
-      );
-    }
-
-    if (sortBy === "duration") {
-      const toMinutes = (duration: string) => {
-        const [h, m] = duration.split(" ").filter(Boolean);
-        return (parseInt(h) || 0) * 60 + (parseInt(m) || 0);
-      };
-
-      return [...sliced].sort(
-        (a, b) =>
-          toMinutes(a.formattedDuration) - toMinutes(b.formattedDuration)
-      );
-    }
-
-    return sliced;
+  const departingFlights = useMemo(() => {
+    return [...allFlights]
+      .filter((f) => !f.returnFlight)
+      .sort((a, b) =>
+        sortBy === "price"
+          ? parseFloat(a.totalPrice) - parseFloat(b.totalPrice)
+          : sortBy === "duration"
+          ? toMinutes(a.formattedDuration) - toMinutes(b.formattedDuration)
+          : 0
+      )
+      .slice(0, 4);
   }, [allFlights, sortBy]);
+
+  const returnFlights = useMemo(() => {
+    return [...allFlights]
+      .filter((f) => f.returnFlight)
+      .sort((a, b) =>
+        sortBy === "price"
+          ? parseFloat(a.totalPrice) - parseFloat(b.totalPrice)
+          : sortBy === "duration"
+          ? toMinutes(a.formattedDuration) - toMinutes(b.formattedDuration)
+          : 0
+      )
+      .slice(0, 4);
+  }, [allFlights, sortBy]);
+
+  function toMinutes(duration: string): number {
+    const [h, , m] = duration.split(" ");
+    return (parseInt(h) || 0) * 60 + (parseInt(m) || 0);
+  }
 
   const navigate = useNavigate();
 
@@ -110,11 +117,11 @@ export default function ResultsPage() {
             Departing Flights
           </Typography>
 
-          {flights.length === 0 ? (
+          {departingFlights.length === 0 ? (
             <p>No flights found.</p>
           ) : (
             <div style={{ width: "65%" }}>
-              {flights.length > 0 && (
+              {departingFlights.length > 0 && (
                 <>
                   <Typography
                     variant="h1"
@@ -135,7 +142,7 @@ export default function ResultsPage() {
                       </Box>
                       <Box
                         sx={{
-                          width: "65%",
+                          width: "45%",
                           mb: 2,
                           display: "flex",
                           gap: 2,
@@ -161,7 +168,7 @@ export default function ResultsPage() {
                   </Typography>
                 </>
               )}
-              {flights.map((flight, index) => (
+              {departingFlights.map((flight, index) => (
                 <Card key={index} sx={{ mb: 4, width: "100%" }}>
                   <CardContent
                     sx={{
@@ -201,6 +208,98 @@ export default function ResultsPage() {
                     >
                       <Typography sx={{ fontWeight: "400", fontSize: "16px" }}>
                         {" "}
+                        {flight.formattedDuration}
+                      </Typography>
+                    </Box>
+
+                    <Box>
+                      <Typography sx={{ fontWeight: 600 }} component="div">
+                        {flight.currency === "EUR"
+                          ? `€${flight.totalPrice}`
+                          : `$${flight.totalPrice}`}
+                        <Typography sx={{ display: "inline" }} component="span">
+                          {" "}
+                          Total Price
+                        </Typography>
+                      </Typography>
+
+                      <Typography sx={{ fontWeight: 600 }} component="div">
+                        {flight.currency === "EUR"
+                          ? `€${flight.price}`
+                          : `$${flight.price}`}
+                        <Typography sx={{ display: "inline" }} component="span">
+                          {" "}
+                          Per Traveler
+                        </Typography>
+                      </Typography>
+
+                      <Button
+                        variant="text"
+                        size="medium"
+                        sx={{ mt: 1, position: "absolute", right: "20px" }}
+                        onClick={() => navigate(`/details/${flight.id}`)}
+                      >
+                        View Details
+                      </Button>
+                    </Box>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+          {returnFlights.length > 0 && (
+            <div style={{ width: "65%" }}>
+              <Typography
+                variant="h5"
+                gutterBottom
+                sx={{
+                  fontWeight: "500",
+                  width: "100%",
+                  fontSize: "24px",
+                  mt: 5,
+                }}
+              >
+                Returning Flights
+              </Typography>
+
+              {returnFlights.map((flight, index) => (
+                <Card key={`return-${index}`} sx={{ mb: 4, width: "100%" }}>
+                  <CardContent
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      position: "relative",
+                      height: "150px",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                        {flight.formattedTimeRange}
+                      </Typography>
+                      <Typography>{flight.airline}</Typography>
+                    </Box>
+                    <Box>
+                      <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
+                        {flight.numberOfStops === 0
+                          ? "Non-stop"
+                          : `Stops: ${flight.numberOfStops} (${flight.stops})`}
+                      </Typography>
+                    </Box>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography sx={{ fontWeight: "400", fontSize: "16px" }}>
                         {flight.formattedDuration}
                       </Typography>
                     </Box>

@@ -21,4 +21,5 @@ public class FlightSearchResponse {
     private String stops;
     private List<SegmentSummary> segments;
     private List<String> layoverDurations;
+    private boolean returnFlight;
 }
