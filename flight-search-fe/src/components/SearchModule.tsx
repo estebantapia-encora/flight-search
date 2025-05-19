@@ -56,6 +56,7 @@ export default function SearchModule() {
     setDestinationLocationCode(airport.iataCode);
     dispatch(setDestinationAirport(airport));
   };
+
 const handleSearch = async () => {
   setLoading(true);
   const body = {
@@ -68,16 +69,18 @@ const handleSearch = async () => {
     nonStop,
   };
   try {
-    const response = await fetch("/api/flights/search", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/flights/search`, // ✅ Replaced base path
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      }
+    );
 
     const data = await response.json();
     console.log("Flight results:", data);
 
-    // ✅ Clear previous selections to prevent skipping departing page
     dispatch(setSelectedDeparture(null));
     dispatch(setSelectedReturn(null));
     dispatch(setSearchResults(data));
@@ -88,6 +91,7 @@ const handleSearch = async () => {
     setLoading(false);
   }
 };
+
 
 
 

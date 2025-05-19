@@ -1,0 +1,23 @@
+
+services:
+  backend:
+    build:
+      context: ./flight-search-be
+    ports:
+      - "8080:8080"
+    networks:
+      - flightnet
+
+  frontend:
+    build:
+      context: ./flight-search-fe
+    ports:
+      - "3000:80"  # Nginx serves frontend on port 80 internally
+    depends_on:
+      - backend
+    networks:
+      - flightnet
+
+networks:
+  flightnet:
+    driver: bridge
