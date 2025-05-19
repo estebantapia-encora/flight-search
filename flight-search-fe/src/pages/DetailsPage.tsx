@@ -130,7 +130,7 @@ function DetailsPage() {
                       fontWeight: "600",
                       width: "100%",
                       paddingLeft: "24px",
-                      marginBottom:"5px",
+                      marginBottom: "5px",
                     }}
                   >
                     Segment {index + 1} - {getCityName(segment.departureLoc)} →{" "}
