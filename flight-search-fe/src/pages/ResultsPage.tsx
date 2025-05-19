@@ -13,6 +13,7 @@ import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import ReturnToSearchButton from "../components/ReturnToSearchButton";
 import Airplane from "../assets/AirplaneBackground.jpg";
 import { useNavigate } from "react-router-dom";
+
 import "../App.css";
 
 export default function ResultsPage() {
@@ -51,6 +52,10 @@ export default function ResultsPage() {
       )
       .slice(0, 4);
   }, [allFlights, sortBy]);
+
+  const selectedDeparture = useSelector(
+    (s: RootState) => s.searchResults.selectedDeparture
+  );
 
   function toMinutes(duration: string): number {
     const [h, , m] = duration.split(" ");
@@ -109,241 +114,333 @@ export default function ResultsPage() {
           <Box sx={{ width: "65%", mb: 4, mt: 2 }}>
             <ReturnToSearchButton />
           </Box>
-          <Typography
-            variant="h5"
-            gutterBottom
-            sx={{ fontWeight: "500", width: "65%", fontSize: "24px" }}
-          >
-            Departing Flights
-          </Typography>
 
-          {departingFlights.length === 0 ? (
-            <p>No flights found.</p>
-          ) : (
-            <div style={{ width: "65%" }}>
-              {departingFlights.length > 0 && (
-                <>
-                  <Typography
-                    variant="h1"
-                    gutterBottom
-                    sx={{ fontWeight: "400", fontSize: "20px", width: "100%" }}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        width: "100%",
-                        justifyContent: "space-between",
-                      }}
-                    >
-                      <Box>
-                        {originAirport?.cityName} ({originAirport?.iataCode}) →{" "}
-                        {destinationAirport?.cityName} (
-                        {destinationAirport?.iataCode})
-                      </Box>
-                      <Box
-                        sx={{
-                          width: "45%",
-                          mb: 2,
-                          display: "flex",
-                          gap: 2,
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <Button
-                          sx={{ fontSize: "15px" }}
-                          variant={sortBy === "duration" ? "outlined" : "text"}
-                          onClick={() => setSortBy("duration")}
-                        >
-                          Sort by Duration
-                        </Button>
-                        <Button
-                          sx={{ fontSize: "15px" }}
-                          variant={sortBy === "price" ? "outlined" : "text"}
-                          onClick={() => setSortBy("price")}
-                        >
-                          Sort by Price
-                        </Button>
-                      </Box>
-                    </Box>
-                  </Typography>
-                </>
-              )}
-              {departingFlights.map((flight, index) => (
-                <Card key={index} sx={{ mb: 4, width: "100%" }}>
-                  <CardContent
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      position: "relative",
-                      height: "150px",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      {" "}
-                      <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                        {flight.formattedTimeRange}
-                      </Typography>
-                      <Typography>{flight.airline}</Typography>
-                    </Box>
-                    <Box>
-                      <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                        {flight.numberOfStops === 0
-                          ? "Non-stop"
-                          : `Stops: ${flight.numberOfStops} (${flight.stops})`}
-                      </Typography>
-                    </Box>
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography sx={{ fontWeight: "400", fontSize: "16px" }}>
-                        {" "}
-                        {flight.formattedDuration}
-                      </Typography>
-                    </Box>
-
-                    <Box>
-                      <Typography sx={{ fontWeight: 600 }} component="div">
-                        {flight.currency === "EUR"
-                          ? `€${flight.totalPrice}`
-                          : `$${flight.totalPrice}`}
-                        <Typography sx={{ display: "inline" }} component="span">
-                          {" "}
-                          Total Price
-                        </Typography>
-                      </Typography>
-
-                      <Typography sx={{ fontWeight: 600 }} component="div">
-                        {flight.currency === "EUR"
-                          ? `€${flight.price}`
-                          : `$${flight.price}`}
-                        <Typography sx={{ display: "inline" }} component="span">
-                          {" "}
-                          Per Traveler
-                        </Typography>
-                      </Typography>
-
-                      <Button
-                        variant="text"
-                        size="medium"
-                        sx={{ mt: 1, position: "absolute", right: "20px" }}
-                        onClick={() => navigate(`/details/${flight.id}`)}
-                      >
-                        View Details
-                      </Button>
-                    </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          )}
-          {returnFlights.length > 0 && (
-            <div style={{ width: "65%" }}>
+          {!selectedDeparture && (
+            <>
               <Typography
                 variant="h5"
                 gutterBottom
-                sx={{
-                  fontWeight: "500",
-                  width: "100%",
-                  fontSize: "24px",
-                  mt: 5,
-                }}
+                sx={{ fontWeight: "500", width: "65%", fontSize: "24px" }}
               >
-                Returning Flights
+                Departing Flights
               </Typography>
-              <Typography sx={{ fontWeight: "400", fontSize: "20px" }}>
-                <Box>
-                  {" "}
-                  {destinationAirport?.cityName} ({destinationAirport?.iataCode}
-                  ) →{originAirport?.cityName} ({originAirport?.iataCode})
-                </Box>
-              </Typography>
-              {returnFlights.map((flight, index) => (
-                <Card key={`return-${index}`} sx={{ mb: 4, width: "100%" }}>
-                  <CardContent
+
+              {departingFlights.length === 0 ? (
+                <p>No flights found.</p>
+              ) : (
+                <div style={{ width: "65%" }}>
+                  {departingFlights.length > 0 && (
+                    <>
+                      <Typography
+                        variant="h1"
+                        gutterBottom
+                        sx={{
+                          fontWeight: "400",
+                          fontSize: "20px",
+                          width: "100%",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            width: "100%",
+                            justifyContent: "space-between",
+                          }}
+                        >
+                          <Box>
+                            {originAirport?.cityName} ({originAirport?.iataCode}
+                            ) → {destinationAirport?.cityName} (
+                            {destinationAirport?.iataCode})
+                          </Box>
+                          <Box
+                            sx={{
+                              width: "45%",
+                              mb: 2,
+                              display: "flex",
+                              gap: 2,
+                              justifyContent: "flex-end",
+                            }}
+                          >
+                            <Button
+                              sx={{ fontSize: "15px" }}
+                              variant={
+                                sortBy === "duration" ? "outlined" : "text"
+                              }
+                              onClick={() => setSortBy("duration")}
+                            >
+                              Sort by Duration
+                            </Button>
+                            <Button
+                              sx={{ fontSize: "15px" }}
+                              variant={sortBy === "price" ? "outlined" : "text"}
+                              onClick={() => setSortBy("price")}
+                            >
+                              Sort by Price
+                            </Button>
+                          </Box>
+                        </Box>
+                      </Typography>
+                    </>
+                  )}
+                  {departingFlights.map((flight, index) => (
+                    <Card key={index} sx={{ mb: 4, width: "100%" }}>
+                      <CardContent
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          position: "relative",
+                          height: "150px",
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          {" "}
+                          <Typography
+                            sx={{ fontWeight: "600", fontSize: "16px" }}
+                          >
+                            {flight.formattedTimeRange}
+                          </Typography>
+                          <Typography>{flight.airline}</Typography>
+                        </Box>
+                        <Box>
+                          <Typography
+                            sx={{ fontWeight: "600", fontSize: "16px" }}
+                          >
+                            {flight.numberOfStops === 0
+                              ? "Non-stop"
+                              : `Stops: ${flight.numberOfStops} (${flight.stops})`}
+                          </Typography>
+                        </Box>
+                        <Box
+                          sx={{
+                            display: "flex",
+                            flexDirection: "column",
+                            alignItems: "center",
+                          }}
+                        >
+                          <Typography
+                            sx={{ fontWeight: "400", fontSize: "16px" }}
+                          >
+                            {" "}
+                            {flight.formattedDuration}
+                          </Typography>
+                        </Box>
+
+                        <Box>
+                          {flight.currency && (
+                            <Typography
+                              sx={{ fontSize: "16px", fontWeight: "500" }}
+                            >
+                              Currency: {flight.currency}
+                            </Typography>
+                          )}
+                          <Typography sx={{ fontWeight: 600 }} component="div">
+                            {flight.currency === "EUR"
+                              ? `€${flight.totalPrice}`
+                              : `$${flight.totalPrice}`}
+                            <Typography
+                              sx={{ display: "inline" }}
+                              component="span"
+                            >
+                              {" "}
+                              Total Price
+                            </Typography>
+                          </Typography>
+
+                          <Typography sx={{ fontWeight: 600 }} component="div">
+                            {flight.currency === "EUR"
+                              ? `€${flight.price}`
+                              : `$${flight.price}`}
+                            <Typography
+                              sx={{ display: "inline" }}
+                              component="span"
+                            >
+                              {" "}
+                              Per Traveler
+                            </Typography>
+                          </Typography>
+
+                          <Button
+                            variant="text"
+                            size="medium"
+                            sx={{ mt: 1, position: "absolute", right: "20px" }}
+                            onClick={() => navigate(`/details/${flight.id}`)}
+                          >
+                            View Details
+                          </Button>
+                        </Box>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </>
+          )}
+
+          {selectedDeparture && returnFlights.length > 0 && (
+            <>
+              <div style={{ width: "65%" }}>
+                <Typography
+                  variant="h5"
+                  gutterBottom
+                  sx={{
+                    fontWeight: "500",
+                    width: "100%",
+                    fontSize: "24px",
+                    mt: 5,
+                  }}
+                >
+                  Returning Flights
+                </Typography>
+                
+                <Typography
+                  variant="h1"
+                  gutterBottom
+                  sx={{
+                    fontWeight: "400",
+                    fontSize: "20px",
+                    width: "100%",
+                  }}
+                >
+                  <Box
                     sx={{
                       display: "flex",
+                      width: "100%",
                       justifyContent: "space-between",
-                      alignItems: "center",
-                      position: "relative",
-                      height: "150px",
                     }}
                   >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                      }}
-                    >
-                      <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                        {flight.formattedTimeRange}
-                      </Typography>
-                      <Typography>{flight.airline}</Typography>
-                    </Box>
                     <Box>
-                      <Typography sx={{ fontWeight: "600", fontSize: "16px" }}>
-                        {flight.numberOfStops === 0
-                          ? "Non-stop"
-                          : `Stops: ${flight.numberOfStops} (${flight.stops})`}
-                      </Typography>
+                      {destinationAirport?.cityName} (
+                      {destinationAirport?.iataCode}) →{" "}
+                      {originAirport?.cityName} ({originAirport?.iataCode})
                     </Box>
                     <Box
                       sx={{
+                        width: "45%",
+                        mb: 2,
                         display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
+                        gap: 2,
+                        justifyContent: "flex-end",
                       }}
                     >
-                      <Typography sx={{ fontWeight: "400", fontSize: "16px" }}>
-                        {flight.formattedDuration}
-                      </Typography>
-                    </Box>
-
-                    <Box>
-                      <Typography sx={{ fontWeight: 600 }} component="div">
-                        {flight.currency === "EUR"
-                          ? `€${flight.totalPrice}`
-                          : `$${flight.totalPrice}`}
-                        <Typography sx={{ display: "inline" }} component="span">
-                          {" "}
-                          Total Price
-                        </Typography>
-                      </Typography>
-
-                      <Typography sx={{ fontWeight: 600 }} component="div">
-                        {flight.currency === "EUR"
-                          ? `€${flight.price}`
-                          : `$${flight.price}`}
-                        <Typography sx={{ display: "inline" }} component="span">
-                          {" "}
-                          Per Traveler
-                        </Typography>
-                      </Typography>
-
                       <Button
-                        variant="text"
-                        size="medium"
-                        sx={{ mt: 1, position: "absolute", right: "20px" }}
-                        onClick={() => navigate(`/details/${flight.id}`)}
+                        sx={{ fontSize: "15px" }}
+                        variant={sortBy === "duration" ? "outlined" : "text"}
+                        onClick={() => setSortBy("duration")}
                       >
-                        View Details
+                        Sort by Duration
+                      </Button>
+                      <Button
+                        sx={{ fontSize: "15px" }}
+                        variant={sortBy === "price" ? "outlined" : "text"}
+                        onClick={() => setSortBy("price")}
+                      >
+                        Sort by Price
                       </Button>
                     </Box>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
+                  </Box>
+                </Typography>
+                {returnFlights.map((flight, index) => (
+                  <Card key={`return-${index}`} sx={{ mb: 4, width: "100%" }}>
+                    <CardContent
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        position: "relative",
+                        height: "150px",
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          sx={{ fontWeight: "600", fontSize: "16px" }}
+                        >
+                          {flight.formattedTimeRange}
+                        </Typography>
+                        <Typography>{flight.airline}</Typography>
+                      </Box>
+                      <Box>
+                        <Typography
+                          sx={{ fontWeight: "600", fontSize: "16px" }}
+                        >
+                          {flight.numberOfStops === 0
+                            ? "Non-stop"
+                            : `Stops: ${flight.numberOfStops} (${flight.stops})`}
+                        </Typography>
+                      </Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          alignItems: "center",
+                        }}
+                      >
+                        <Typography
+                          sx={{ fontWeight: "400", fontSize: "16px" }}
+                        >
+                          {flight.formattedDuration}
+                        </Typography>
+                      </Box>
+                      {flight.currency && (
+                        <Typography
+                          sx={{ fontSize: "16px", fontWeight: "500" }}
+                        >
+                          Currency: {flight.currency}
+                        </Typography>
+                      )}
+                      <Box>
+                        <Typography sx={{ fontWeight: 600 }} component="div">
+                          {flight.currency === "EUR"
+                            ? `€${flight.totalPrice}`
+                            : `$${flight.totalPrice}`}
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                          >
+                            {" "}
+                            Total Price
+                          </Typography>
+                        </Typography>
+
+                        <Typography sx={{ fontWeight: 600 }} component="div">
+                          {flight.currency === "EUR"
+                            ? `€${flight.price}`
+                            : `$${flight.price}`}
+                          <Typography
+                            sx={{ display: "inline" }}
+                            component="span"
+                          >
+                            {" "}
+                            Per Traveler
+                          </Typography>
+                        </Typography>
+
+                        <Button
+                          variant="text"
+                          size="medium"
+                          sx={{ mt: 1, position: "absolute", right: "20px" }}
+                          onClick={() => navigate(`/details/${flight.id}`)}
+                        >
+                          View Details
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                ))}
+              </div>
+            </>
           )}
         </div>
       </Paper>
