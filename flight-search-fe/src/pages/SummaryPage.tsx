@@ -1,10 +1,10 @@
 import { useSelector } from "react-redux";
 import type { RootState } from "../redux/store";
 import { Box, Card, Typography, Paper, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import ReturnToSearchButton from "../components/ReturnToSearchButton";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import AirplaneBackground from "../assets/AirplaneBackground.jpg";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import "../App.css";
 
 // re‐use your formatting helpers:
@@ -23,7 +23,6 @@ function formatTime(time: string) {
 }
 
 export default function SummaryPage() {
-  const navigate = useNavigate();
   const originAirport = useSelector(
     (s: RootState) => s.searchResults.originAirport
   )!;
@@ -60,6 +59,25 @@ export default function SummaryPage() {
 
   // currency symbol
   const symbol = depart.currency === "EUR" ? "€" : "$";
+  const format = (n: number) =>
+    n.toLocaleString(undefined, {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    });
+
+  const formattedDeBase = format(deBase);
+  const formattedDeFees = format(deFees);
+  const formattedDeTotal = format(deTotal);
+
+  const formattedReBase = format(reBase);
+  const formattedReFees = format(reFees);
+  const formattedReTotal = format(reTotal);
+
+  const formattedPerBase = format(perBase);
+  const formattedPerFees = format(perFees);
+  const formattedPerTotal = format(perTotal);
+
+  const formattedGrandTotal = format(grandTotal);
 
   return (
     <>
@@ -111,81 +129,154 @@ export default function SummaryPage() {
           height: "100vh",
         }}
       >
-        <Paper sx={{ maxWidth: 800, mx: "auto" }}>
+        <Paper
+          sx={{
+            maxWidth: 1300,
+            width: "100%",
+            mx: "auto",
+            pt: 2,
+            pl: 2,
+            pb: 2,
+          }}
+        >
           <ReturnToSearchButton />
 
-          <Typography variant="h4" gutterBottom>
+          <Typography
+            variant="h5"
+            gutterBottom
+            sx={{ ml: 2, mt: 2, fontWeight: "500" }}
+          >
             Booking Summary
           </Typography>
 
           {/* Departing flight summary */}
-          <Card variant="outlined" sx={{ mb: 2, p: 2 }}>
-            <Typography variant="h6">Outbound</Typography>
-            <Typography>
-              {originAirport.cityName} → {destinationAirport.cityName}
-            </Typography>
-            <Typography>
-              {formatDate(depart.segments[0].departureTime)} @{" "}
-              {formatTime(depart.segments[0].departureTime)} –{" "}
-              {formatTime(depart.segments.slice(-1)[0].arrivalTime)}
-            </Typography>
-            <Typography>
-              Base: {symbol}
-              {deBase.toFixed(2)} | Fees: {symbol}
-              {deFees.toFixed(2)} | Total: {symbol}
-              {deTotal.toFixed(2)}
-            </Typography>
-          </Card>
 
-          {/* Returning flight summary if present */}
-          {ret && (
-            <Card variant="outlined" sx={{ mb: 2, p: 2 }}>
-              <Typography variant="h6">Return</Typography>
+          <Box sx={{ display: "flex", width: "100%" }}>
+            <Card
+              variant="outlined"
+              sx={{ mb: 2, p: 2, mx: "auto", width: "30%" }}
+            >
+              <Typography variant="h6">Outbound</Typography>
               <Typography>
-                {destinationAirport.cityName} → {originAirport.cityName}
+                <span style={{ fontWeight: "500" }}> Route:</span>{" "}
+                {originAirport.cityName} → {destinationAirport.cityName}
               </Typography>
               <Typography>
-                {formatDate(ret.segments[0].departureTime)} @{" "}
-                {formatTime(ret.segments[0].departureTime)} –{" "}
-                {formatTime(ret.segments.slice(-1)[0].arrivalTime)}
+                <span style={{ fontWeight: "500" }}>Date:</span>{" "}
+                {formatDate(depart.segments[0].departureTime)} @{" "}
+                {formatTime(depart.segments[0].departureTime)} –{" "}
+                {formatTime(depart.segments.slice(-1)[0].arrivalTime)}
               </Typography>
               <Typography>
-                Base: {symbol}
-                {reBase.toFixed(2)} | Fees: {symbol}
-                {reFees.toFixed(2)} | Total: {symbol}
-                {reTotal.toFixed(2)}
+                - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                - - - - - - - - -{" "}
+              </Typography>
+              <Typography sx={{ fontWeight: "600" }}>
+                Fares
+                <Typography>
+                  <span style={{ fontWeight: 500 }}>Base: </span>
+                  {depart.currency} {symbol}
+                  {formattedDeBase}
+                </Typography>
+                <Typography>
+                  {" "}
+                  <span style={{ fontWeight: 500 }}>Fees: </span>
+                  {depart.currency} {symbol}
+                  {formattedDeFees}
+                </Typography>
+                <Typography>
+                  <span style={{ fontWeight: 500 }}>Total: </span>
+                  {depart.currency} {symbol}
+                  {formattedDeTotal}
+                </Typography>
               </Typography>
             </Card>
-          )}
 
-          {/* Grand totals */}
-          <Box sx={{ mt: 3 }}>
-            <Typography variant="h6">Combined per traveler:</Typography>
-            <Typography>
-              Base: {symbol}
-              {perBase.toFixed(2)} | Fees: {symbol}
-              {perFees.toFixed(2)} | Total: {symbol}
-              {perTotal.toFixed(2)}
-            </Typography>
-            <Typography sx={{ mt: 2 }} variant="h6">
-              Grand total ({numTrav} traveler{numTrav > 1 ? "s" : ""}):
-            </Typography>
-            <Typography variant="h5">
-              {symbol}
-              {grandTotal.toFixed(2)}
-            </Typography>
+            {/* Returning flight summary if present */}
+            {ret && (
+              <Card
+                variant="outlined"
+                sx={{ mb: 2, p: 2, mx: "auto", width: "30%" }}
+              >
+                <Typography variant="h6">Return</Typography>
+                <Typography>
+                  <span style={{ fontWeight: "500" }}>Route:</span>{" "}
+                  {destinationAirport.cityName} → {originAirport.cityName}
+                </Typography>
+                <Typography>
+                  <span style={{ fontWeight: "500" }}>Date:</span>{" "}
+                  {formatDate(ret.segments[0].departureTime)} @{" "}
+                  {formatTime(ret.segments[0].departureTime)} –{" "}
+                  {formatTime(ret.segments.slice(-1)[0].arrivalTime)}
+                </Typography>
+                <Typography>
+                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+                  - - - - - - - - - -{" "}
+                </Typography>
+                <Typography sx={{ fontWeight: "600" }}>
+                  Fares
+                  <Typography>
+                    <span style={{ fontWeight: 500 }}>Base: </span>
+                    {depart.currency} {symbol}
+                    {formattedReBase}
+                  </Typography>
+                  <Typography>
+                    {" "}
+                    <span style={{ fontWeight: 500 }}>Fees: </span>
+                    {depart.currency} {symbol}
+                    {formattedReFees}
+                  </Typography>
+                  <Typography>
+                    <span style={{ fontWeight: 500 }}>Total: </span>
+                    {depart.currency} {symbol}
+                    {formattedReTotal}
+                  </Typography>
+                </Typography>
+              </Card>
+            )}
+
+            {/* Grand totals */}
+            <Box sx={{ mt: 1, mx: "auto", width: "30%", pl: 10 }}>
+              <Typography variant="h6">Combined per traveler:</Typography>
+              <Typography>
+                <span style={{ fontWeight: 500 }}>Base: </span>
+                {depart.currency} {symbol}
+                {formattedPerBase}
+              </Typography>
+              <Typography>
+                <span style={{ fontWeight: 500 }}>Fees: </span>
+                {depart.currency} {symbol}
+                {formattedPerFees}
+              </Typography>
+              <Typography>
+                <span style={{ fontWeight: 500 }}>Total: </span>
+                {depart.currency} {symbol}
+                {formattedPerTotal}
+              </Typography>
+
+              <Typography sx={{ mt: 2 }} variant="h6">
+                Grand total ({numTrav} traveler{numTrav > 1 ? "s" : ""}):
+              </Typography>
+              <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                {depart.currency} {symbol}
+                {formattedGrandTotal}
+              </Typography>
+            </Box>
           </Box>
-
-          <Button
-            variant="contained"
-            size="large"
-            sx={{ mt: 4 }}
-            onClick={() => {
-              /* your final "confirm" handler */
-            }}
-          >
-            Confirm Booking
-          </Button>
+          <Box sx={{ display: "flex", justifyContent: "end", mr: 14 }}>
+            <Button
+              variant="contained"
+              size="medium"
+              color="success"
+              sx={{ mt: 1, width: "20%" }}
+              onClick={() => {
+                alert("✅ Booking confirmed!\nYour itinerary has been saved.");
+              }}
+            >
+              Confirm Booking
+              <AddShoppingCartIcon sx={{ ml: 1, fontSize: "18px" }} />
+            </Button>
+          </Box>
         </Paper>
       </Box>
     </>
