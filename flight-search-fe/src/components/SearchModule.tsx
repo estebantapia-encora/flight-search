@@ -18,6 +18,12 @@ import NonStop from "./NonStop";
 import SearchButton from "./SearchButton";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { Dayjs } from "dayjs";
+import {
+  setSelectedDeparture,
+  setSelectedReturn,
+} from "../redux/searchResultsSlice";
+
+
 
 export default function SearchModule() {
   const [originLocationCode, setOriginLocationCode] = useState("");
@@ -50,35 +56,41 @@ export default function SearchModule() {
     setDestinationLocationCode(airport.iataCode);
     dispatch(setDestinationAirport(airport));
   };
-  const handleSearch = async () => {
-    setLoading(true);
-    const body = {
-      originLocationCode,
-      destinationLocationCode,
-      departureDate: departureDate?.format("YYYY-MM-DD"),
-      returnDate: returnDate?.format("YYYY-MM-DD") || null,
-      adults,
-      currencyCode,
-      nonStop,
-    };
-    try {
-      const response = await fetch("/api/flights/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-      console.log("Flight results:", data);
-      dispatch(setSearchResults(data)); // Save results to Redux
-      navigate("/results");
-      // TODO: store results or navigate to results page
-    } catch (error) {
-      console.error("Flight search failed:", error);
-    } finally {
-      setLoading(false);
-    }
+const handleSearch = async () => {
+  setLoading(true);
+  const body = {
+    originLocationCode,
+    destinationLocationCode,
+    departureDate: departureDate?.format("YYYY-MM-DD"),
+    returnDate: returnDate?.format("YYYY-MM-DD") || null,
+    adults,
+    currencyCode,
+    nonStop,
   };
+  try {
+    const response = await fetch("/api/flights/search", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+    });
+
+    const data = await response.json();
+    console.log("Flight results:", data);
+
+    // ✅ Clear previous selections to prevent skipping departing page
+    dispatch(setSelectedDeparture(null));
+    dispatch(setSelectedReturn(null));
+    dispatch(setSearchResults(data));
+    navigate("/results");
+  } catch (error) {
+    console.error("Flight search failed:", error);
+  } finally {
+    setLoading(false);
+  }
+};
+
+
+
   useEffect(() => {
     console.log("Origin:", originLocationCode);
     console.log("Destination:", destinationLocationCode);
