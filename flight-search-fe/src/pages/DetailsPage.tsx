@@ -365,7 +365,7 @@ const handleBook = () => {
   sx={{ mt: 8, width: "80%", margin: "0 auto" }}
   onClick={handleBook}
 >
-  {flight.returnFlight ? "Select and go to summary" : "Book"}
+  {flight.returnFlight ? "Select and go to summary" : "Select Flight"}
 </Button>
 
           </Card>
