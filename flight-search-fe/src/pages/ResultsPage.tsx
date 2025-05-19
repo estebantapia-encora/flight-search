@@ -261,7 +261,13 @@ export default function ResultsPage() {
               >
                 Returning Flights
               </Typography>
-
+              <Typography sx={{ fontWeight: "400", fontSize: "20px" }}>
+                <Box>
+                  {" "}
+                  {destinationAirport?.cityName} ({destinationAirport?.iataCode}
+                  ) →{originAirport?.cityName} ({originAirport?.iataCode})
+                </Box>
+              </Typography>
               {returnFlights.map((flight, index) => (
                 <Card key={`return-${index}`} sx={{ mb: 4, width: "100%" }}>
                   <CardContent
