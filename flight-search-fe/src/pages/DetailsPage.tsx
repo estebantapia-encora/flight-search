@@ -6,6 +6,12 @@ import Airplane from "../assets/AirplaneBackground.jpg";
 import FlightTakeoffIcon from "@mui/icons-material/FlightTakeoff";
 import { Box, Typography, Card, Paper, Button } from "@mui/material";
 import ReturnToResultsButton from "../components/ReturnToResultsButton";
+import {
+  setSelectedDeparture,
+  setSelectedReturn,
+} from "../redux/searchResultsSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 function formatTime(time: string) {
   return new Date(time).toLocaleTimeString([], {
@@ -50,6 +56,31 @@ function DetailsPage() {
       return destinationAirport.cityName;
     return iata; // fallback if not found
   };
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const returnFlightsExist = useSelector((state: RootState) =>
+    state.searchResults.results.some((f) => f.returnFlight)
+  );
+
+const handleBook = () => {
+  if (!flight.returnFlight) {
+    dispatch(setSelectedDeparture(flight));
+    
+    // Force redirect AFTER a short delay so the store is updated
+    setTimeout(() => {
+      if (returnFlightsExist) {
+        navigate("/results"); // go select return flight
+      } else {
+        navigate("/summary"); // one-way
+      }
+    }, 0);
+  } else {
+    dispatch(setSelectedReturn(flight));
+    navigate("/summary");
+  }
+};
+
 
   return (
     <Box
@@ -329,12 +360,14 @@ function DetailsPage() {
                 })}
               </Typography>
             </Box>
-            <Button
-              variant="contained"
-              sx={{ mt: 8, width: "50%", margin: "0 auto" }}
-            >
-              Book
-            </Button>
+        <Button
+  variant="contained"
+  sx={{ mt: 8, width: "80%", margin: "0 auto" }}
+  onClick={handleBook}
+>
+  {flight.returnFlight ? "Select and go to summary" : "Book"}
+</Button>
+
           </Card>
         </Box>
       </Paper>

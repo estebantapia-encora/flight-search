@@ -16,12 +16,16 @@ interface SearchResultsState {
   results: Flight[];
   originAirport: Airport | null;
   destinationAirport: Airport | null;
+    selectedDeparture: Flight | null;  
+  selectedReturn: Flight | null; 
 }
 
 const initialState: SearchResultsState = {
   results: [],
-    originAirport: null,
+  originAirport: null,
   destinationAirport: null,
+  selectedDeparture: null,
+  selectedReturn: null,
 };
 
 const searchResultsSlice = createSlice({
@@ -37,6 +41,12 @@ const searchResultsSlice = createSlice({
     setDestinationAirport(state, action: PayloadAction<Airport>) {
       state.destinationAirport = action.payload;
     },
+setSelectedDeparture(state, action: PayloadAction<Flight | null>) {
+  state.selectedDeparture = action.payload;
+},
+setSelectedReturn(state, action: PayloadAction<Flight | null>) {
+  state.selectedReturn = action.payload;
+},
   },
 });
 
@@ -46,4 +56,6 @@ export const {
   setSearchResults,
   setOriginAirport,
   setDestinationAirport,
+  setSelectedDeparture,
+  setSelectedReturn
 } = searchResultsSlice.actions;
