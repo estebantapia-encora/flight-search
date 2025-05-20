@@ -16,6 +16,7 @@ export default function DepartureSelect({ onChange }: DepartureSelectProps) {
       const response = await fetch(
         `/api/airports/search?keyword=${searchText.toUpperCase()}`
       );
+
       const data = await response.json();
       setOptions(Array.isArray(data) ? data : []);
     };
@@ -44,6 +45,7 @@ export default function DepartureSelect({ onChange }: DepartureSelectProps) {
               .toLowerCase()
               .replace(/\b\w/g, (l) => l.toUpperCase());
             onChange({ cityName, iataCode });
+
           }
         }}
         renderInput={(params) => (

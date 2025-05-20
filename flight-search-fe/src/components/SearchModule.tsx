@@ -23,6 +23,7 @@ import {
   setSelectedReturn,
 } from "../redux/searchResultsSlice";
 
+
 export default function SearchModule() {
   const [originLocationCode, setOriginLocationCode] = useState("");
   const [destinationLocationCode, setDestinationLocationCode] = useState("");
@@ -54,6 +55,7 @@ export default function SearchModule() {
     setDestinationLocationCode(airport.iataCode);
     dispatch(setDestinationAirport(airport));
   };
+
   const handleSearch = async () => {
     setLoading(true);
     const body = {
@@ -86,6 +88,7 @@ export default function SearchModule() {
       setLoading(false);
     }
   };
+
 
   useEffect(() => {
     console.log("Origin:", originLocationCode);

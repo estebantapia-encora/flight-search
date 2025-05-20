@@ -7,6 +7,7 @@ import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
 
 
+
 type DepartureDateProps = {
   value: Dayjs | null;
   onChange: (value: Dayjs | null) => void;
@@ -24,6 +25,7 @@ export default function DepartureDate({ value, onChange }: DepartureDateProps) {
             label="Departure Date"
             value={value}
              minDate={dayjs()} 
+
             onChange={(newValue) => {
               console.log("📅 Picked date:", newValue);
               onChange(newValue); // ✅ call the real onChange prop
