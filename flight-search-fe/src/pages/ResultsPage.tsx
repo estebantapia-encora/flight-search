@@ -30,19 +30,20 @@ export default function ResultsPage() {
   const departingFlights = useMemo(() => {
     return [...allFlights]
       .filter((f) => !f.returnFlight)
+      .slice(0, 4)
       .sort((a, b) =>
         sortBy === "price"
           ? parseFloat(a.totalPrice) - parseFloat(b.totalPrice)
           : sortBy === "duration"
           ? toMinutes(a.formattedDuration) - toMinutes(b.formattedDuration)
           : 0
-      )
-      .slice(0, 4);
+      );
   }, [allFlights, sortBy]);
 
   const returnFlights = useMemo(() => {
     return [...allFlights]
       .filter((f) => f.returnFlight)
+      .slice(0, 4)
       .sort((a, b) =>
         sortBy === "price"
           ? parseFloat(a.totalPrice) - parseFloat(b.totalPrice)
@@ -298,7 +299,7 @@ export default function ResultsPage() {
                 >
                   Returning Flights
                 </Typography>
-                
+
                 <Typography
                   variant="h1"
                   gutterBottom

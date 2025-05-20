@@ -8,9 +8,11 @@ import type { Dayjs } from "dayjs";
 type ReturnDateProps = {
   value: Dayjs | null;
   onChange: (value: Dayjs | null) => void;
+  minDate: Dayjs | null;
 };
 
-export default function ReturnDate({ value, onChange }: ReturnDateProps) {
+export default function ReturnDate({ value, onChange, minDate }: ReturnDateProps) {
+
   return (
     <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
       <Typography style={{ width: "25%", margin: 0, fontWeight: "300" }}>
@@ -21,6 +23,8 @@ export default function ReturnDate({ value, onChange }: ReturnDateProps) {
           <DatePicker
             label="Return Date"
             value={value}
+            minDate={minDate?.add(1, "day")}
+            disabled={!minDate}
             onChange={(newValue) => {
               console.log("📅 Picked date:", newValue);
               onChange(newValue); // ✅ call the real onChange prop
