@@ -4,6 +4,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { Box, Typography } from "@mui/material";
 import { FormControl } from "@mui/material";
 import type { Dayjs } from "dayjs";
+import dayjs from "dayjs";
+
 
 type DepartureDateProps = {
   value: Dayjs | null;
@@ -21,6 +23,7 @@ export default function DepartureDate({ value, onChange }: DepartureDateProps) {
           <DatePicker
             label="Departure Date"
             value={value}
+             minDate={dayjs()} 
             onChange={(newValue) => {
               console.log("📅 Picked date:", newValue);
               onChange(newValue); // ✅ call the real onChange prop
