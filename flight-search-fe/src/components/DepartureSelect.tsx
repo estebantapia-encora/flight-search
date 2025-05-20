@@ -13,9 +13,9 @@ export default function DepartureSelect({ onChange }: DepartureSelectProps) {
     if (searchText.length < 2) return;
 
     const fetchAirports = async () => {
-     const response = await fetch(
-  `${import.meta.env.VITE_API_URL}/airports/search?keyword=${searchText.toUpperCase()}`
-);
+      const response = await fetch(
+        `/api/airports/search?keyword=${searchText.toUpperCase()}`
+      );
 
       const data = await response.json();
       setOptions(Array.isArray(data) ? data : []);
@@ -44,7 +44,8 @@ export default function DepartureSelect({ onChange }: DepartureSelectProps) {
               .split(" (")[0]
               .toLowerCase()
               .replace(/\b\w/g, (l) => l.toUpperCase());
-              onChange({ cityName, iataCode });
+            onChange({ cityName, iataCode });
+
           }
         }}
         renderInput={(params) => (

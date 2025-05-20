@@ -24,7 +24,6 @@ import {
 } from "../redux/searchResultsSlice";
 
 
-
 export default function SearchModule() {
   const [originLocationCode, setOriginLocationCode] = useState("");
   const [destinationLocationCode, setDestinationLocationCode] = useState("");
@@ -57,42 +56,38 @@ export default function SearchModule() {
     dispatch(setDestinationAirport(airport));
   };
 
-const handleSearch = async () => {
-  setLoading(true);
-  const body = {
-    originLocationCode,
-    destinationLocationCode,
-    departureDate: departureDate?.format("YYYY-MM-DD"),
-    returnDate: returnDate?.format("YYYY-MM-DD") || null,
-    adults,
-    currencyCode,
-    nonStop,
-  };
-  try {
-    const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/flights/search`, // ✅ Replaced base path
-      {
+  const handleSearch = async () => {
+    setLoading(true);
+    const body = {
+      originLocationCode,
+      destinationLocationCode,
+      departureDate: departureDate?.format("YYYY-MM-DD"),
+      returnDate: returnDate?.format("YYYY-MM-DD") || null,
+      adults,
+      currencyCode,
+      nonStop,
+    };
+    try {
+      const response = await fetch(`/api/flights/search`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
-      }
-    );
+      });
 
-    const data = await response.json();
-    console.log("Flight results:", data);
+      const data = await response.json();
+      console.log("Flight results:", data);
 
-    dispatch(setSelectedDeparture(null));
-    dispatch(setSelectedReturn(null));
-    dispatch(setSearchResults(data));
-    navigate("/results");
-  } catch (error) {
-    console.error("Flight search failed:", error);
-  } finally {
-    setLoading(false);
-  }
-};
-
-
+      // ✅ Clear previous selections to prevent skipping departing page
+      dispatch(setSelectedDeparture(null));
+      dispatch(setSelectedReturn(null));
+      dispatch(setSearchResults(data));
+      navigate("/results");
+    } catch (error) {
+      console.error("Flight search failed:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   useEffect(() => {
@@ -149,7 +144,7 @@ const handleSearch = async () => {
         <DepartureSelect onChange={handleOriginSelect} />
         <ArrivalSelect onChange={handleDestinationSelect} />
         <DepartureDate value={departureDate} onChange={setDepartureDate} />
-        <ReturnDate value={returnDate} onChange={setReturnDate} />
+        <ReturnDate value={returnDate} onChange={setReturnDate} minDate={departureDate}/>
         <AdultNumber value={adults} onChange={setAdults} />
         <Currency value={currencyCode} onChange={setCurrencyCode} />
         <NonStop value={nonStop} onChange={setNonStop} />
