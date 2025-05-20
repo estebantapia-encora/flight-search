@@ -145,7 +145,7 @@ const handleSearch = async () => {
         <DepartureSelect onChange={handleOriginSelect} />
         <ArrivalSelect onChange={handleDestinationSelect} />
         <DepartureDate value={departureDate} onChange={setDepartureDate} />
-        <ReturnDate value={returnDate} onChange={setReturnDate} />
+        <ReturnDate value={returnDate} onChange={setReturnDate} minDate={departureDate}/>
         <AdultNumber value={adults} onChange={setAdults} />
         <Currency value={currencyCode} onChange={setCurrencyCode} />
         <NonStop value={nonStop} onChange={setNonStop} />
