@@ -43,7 +43,7 @@ export default function DepartureSelect({ onChange }: DepartureSelectProps) {
               .split(" (")[0]
               .toLowerCase()
               .replace(/\b\w/g, (l) => l.toUpperCase());
-              onChange({ cityName, iataCode });
+            onChange({ cityName, iataCode });
           }
         }}
         renderInput={(params) => (
