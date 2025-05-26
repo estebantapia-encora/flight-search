@@ -11,22 +11,17 @@ import java.util.List;
 
 @Service
 public class AirportSearchService {
-
     private final WebClient webClient;
     private final TokenService tokenService;
-
     public AirportSearchService(AmadeusApiConfig config, TokenService tokenService) {
         this.webClient = config.getWebClient();
         this.tokenService = tokenService;
     }
-
     public List<String> searchAirports(String keyword) {
         if (keyword == null || keyword.trim().isEmpty()) {
             throw new IllegalArgumentException("Keyword must not be empty.");
         }
-
         String token = tokenService.getToken();
-
         System.out.println("🔍 Searching airports for: " + keyword); // Debug
         String json = webClient.get()
                 .uri(uriBuilder -> uriBuilder
@@ -40,18 +35,15 @@ public class AirportSearchService {
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
-
         List<String> results = new ArrayList<>();
         try {
             ObjectMapper mapper = new ObjectMapper();
             JsonNode root = mapper.readTree(json);
             JsonNode data = root.get("data");
-
             if (data == null || !data.isArray()) {
                 System.out.println("❌ No airport data found.");
                 return results;
             }
-
             for (JsonNode airport : data) {
                 String name = airport.get("name").asText();
                 String code = airport.get("iataCode").asText();
@@ -60,7 +52,6 @@ public class AirportSearchService {
         } catch (Exception e) {
             throw new RuntimeException("Failed to parse airport results", e);
         }
-
         return results;
     }
 }

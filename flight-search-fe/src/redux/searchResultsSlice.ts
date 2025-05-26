@@ -3,23 +3,12 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Flight } from "../types/Flight";
 
 
-interface SearchResultsState {
-  results: Flight[];
-}
-
-interface Airport {
-  cityName: string;
-  iataCode: string;
-}
-
-interface SearchResultsState {
-  results: Flight[];
-  originAirport: Airport | null;
-  destinationAirport: Airport | null;
-    selectedDeparture: Flight | null;  
+interface SearchResultsState { results: Flight[]; }
+interface Airport { cityName: string; iataCode: string;}
+interface SearchResultsState { results: Flight[]; originAirport: Airport | null; destinationAirport: Airport | null; 
+  selectedDeparture: Flight | null;  
   selectedReturn: Flight | null; 
 }
-
 const initialState: SearchResultsState = {
   results: [],
   originAirport: null,
@@ -27,7 +16,6 @@ const initialState: SearchResultsState = {
   selectedDeparture: null,
   selectedReturn: null,
 };
-
 const searchResultsSlice = createSlice({
   name: "searchResults",
   initialState,
@@ -49,9 +37,7 @@ setSelectedReturn(state, action: PayloadAction<Flight | null>) {
 },
   },
 });
-
 export default searchResultsSlice.reducer;
-
 export const {
   setSearchResults,
   setOriginAirport,

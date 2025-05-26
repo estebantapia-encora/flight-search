@@ -24,14 +24,11 @@ function formatTime(time: string) {
 
 export default function SummaryPage() {
   const originAirport = useSelector(
-    (s: RootState) => s.searchResults.originAirport
-  )!;
+    (s: RootState) => s.searchResults.originAirport)!;
   const destinationAirport = useSelector(
-    (s: RootState) => s.searchResults.destinationAirport
-  )!;
+    (s: RootState) => s.searchResults.destinationAirport)!;
   const depart = useSelector(
-    (s: RootState) => s.searchResults.selectedDeparture
-  )!;
+    (s: RootState) => s.searchResults.selectedDeparture)!;
   const ret = useSelector((s: RootState) => s.searchResults.selectedReturn);
 
   // compute per‑flight base, fees
@@ -140,7 +137,6 @@ export default function SummaryPage() {
           }}
         >
           <ReturnToSearchButton />
-
           <Typography
             variant="h5"
             gutterBottom
@@ -148,9 +144,7 @@ export default function SummaryPage() {
           >
             Booking Summary
           </Typography>
-
           {/* Departing flight summary */}
-
           <Box sx={{ display: "flex", width: "100%" }}>
             <Card
               variant="outlined"
@@ -191,7 +185,6 @@ export default function SummaryPage() {
                 </Typography>
               </Typography>
             </Card>
-
             {/* Returning flight summary if present */}
             {ret && (
               <Card
@@ -210,8 +203,7 @@ export default function SummaryPage() {
                   {formatTime(ret.segments.slice(-1)[0].arrivalTime)}
                 </Typography>
                 <Typography>
-                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-                  - - - - - - - - - -{" "}
+                  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -{" "}
                 </Typography>
                 <Typography sx={{ fontWeight: "600" }}>
                   Fares
